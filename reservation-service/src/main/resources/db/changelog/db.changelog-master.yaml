@@ -1,0 +1,58 @@
+databaseChangeLog:
+- changeSet:
+    id: 1732075965097-1
+    author: diego (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            constraints:
+              nullable: false
+            name: end_date
+            type: date
+        - column:
+            constraints:
+              nullable: false
+            name: payment_status
+            type: BIT
+        - column:
+            constraints:
+              nullable: false
+            name: reservation_date
+            type: date
+        - column:
+            constraints:
+              nullable: false
+            name: room_id
+            type: INT
+        - column:
+            constraints:
+              nullable: false
+            name: start_date
+            type: date
+        - column:
+            constraints:
+              nullable: false
+            name: status
+            type: BIT
+        - column:
+            constraints:
+              nullable: false
+            name: total_price
+            type: FLOAT
+        - column:
+            constraints:
+              nullable: false
+            name: user_id
+            type: INT
+        - column:
+            name: cancellation_reason
+            type: VARCHAR(255)
+        - column:
+            constraints:
+              nullable: false
+              primaryKey: true
+            name: id
+            type: VARCHAR(255)
+        tableName: t_reservation
+

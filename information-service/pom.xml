@@ -1,0 +1,38 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.dv.microservices</groupId>
+        <artifactId>microservices-booking-parent</artifactId>
+        <version>1.0.0</version>
+    </parent>
+
+    <artifactId>information-service</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <name>Information Service</name>
+    <description>Microservicio para la gestión de información</description>
+
+    <dependencies>
+        <!-- Dependencias específicas del microservicio -->
+        
+    </dependencies>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.liquibase</groupId>
+                <artifactId>liquibase-maven-plugin</artifactId>
+                <version>4.23.2</version>
+                <configuration>
+                    <changeLogFile>src/main/resources/db/changelog/db.changelog-master.yaml</changeLogFile>
+                    <outputChangeLogFile>src/main/resources/db/changelog/db.changelog-master.yaml</outputChangeLogFile>
+                    <url>jdbc:mysql://localhost:3306/information-service</url> 
+                    <username>root</username> 
+                    <password></password> 
+                    <driver>com.mysql.cj.jdbc.Driver</driver>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>

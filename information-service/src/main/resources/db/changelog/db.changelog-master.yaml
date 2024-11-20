@@ -1,0 +1,90 @@
+databaseChangeLog:
+- changeSet:
+    id: 1732075941179-1
+    author: diego (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            constraints:
+              nullable: false
+            name: capacity
+            type: INT
+        - column:
+            constraints:
+              nullable: false
+            name: price
+            type: FLOAT
+        - column:
+            constraints:
+              nullable: false
+            name: room_number
+            type: INT
+        - column:
+            autoIncrement: true
+            constraints:
+              nullable: false
+              primaryKey: true
+            name: id
+            type: BIGINT
+        - column:
+            constraints:
+              nullable: false
+            name: description
+            type: VARCHAR(255)
+        - column:
+            constraints:
+              nullable: false
+            name: services_include
+            type: VARCHAR(255)
+        tableName: t_information
+- changeSet:
+    id: 1732075941179-2
+    author: diego (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            autoIncrement: true
+            constraints:
+              nullable: false
+              primaryKey: true
+            name: id
+            type: BIGINT
+        - column:
+            defaultValueComputed: 'NULL'
+            name: information_id
+            type: BIGINT
+        - column:
+            constraints:
+              nullable: false
+            name: url
+            type: VARCHAR(255)
+        tableName: t_photo
+- changeSet:
+    id: 1732075941179-3
+    author: diego (generated)
+    changes:
+    - createIndex:
+        columns:
+        - column:
+            defaultValueComputed: 'NULL'
+            name: information_id
+        indexName: FKrhxoa96e79hy4m96i09lkw9cg
+        tableName: t_photo
+- changeSet:
+    id: 1732075941179-4
+    author: diego (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: information_id
+        baseTableName: t_photo
+        constraintName: FKrhxoa96e79hy4m96i09lkw9cg
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: RESTRICT
+        onUpdate: RESTRICT
+        referencedColumnNames: id
+        referencedTableName: t_information
+        validate: true
+

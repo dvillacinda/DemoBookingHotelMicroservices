@@ -1,0 +1,90 @@
+databaseChangeLog:
+- changeSet:
+    id: 1732075915332-1
+    author: diego (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            autoIncrement: true
+            constraints:
+              nullable: false
+              primaryKey: true
+            name: id
+            type: BIGINT
+        - column:
+            defaultValueComputed: 'NULL'
+            name: reservation_history_id
+            type: BIGINT
+        - column:
+            constraints:
+              unique: true
+            name: reservation_id
+            type: VARCHAR(255)
+        tableName: t_reservation_history
+- changeSet:
+    id: 1732075915332-2
+    author: diego (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            defaultValueComputed: 'NULL'
+            name: created_at
+            type: date
+        - column:
+            defaultValueComputed: 'NULL'
+            name: updated_at
+            type: date
+        - column:
+            autoIncrement: true
+            constraints:
+              nullable: false
+              primaryKey: true
+            name: id
+            type: BIGINT
+        - column:
+            constraints:
+              nullable: false
+              unique: true
+            name: email
+            type: VARCHAR(255)
+        - column:
+            constraints:
+              nullable: false
+            name: name
+            type: VARCHAR(255)
+        - column:
+            constraints:
+              nullable: false
+              unique: true
+            name: phone_number
+            type: VARCHAR(255)
+        tableName: t_user
+- changeSet:
+    id: 1732075915332-3
+    author: diego (generated)
+    changes:
+    - createIndex:
+        columns:
+        - column:
+            defaultValueComputed: 'NULL'
+            name: reservation_history_id
+        indexName: FK6iwyrgcrxw19umukmsw5u04ax
+        tableName: t_reservation_history
+- changeSet:
+    id: 1732075915332-4
+    author: diego (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: reservation_history_id
+        baseTableName: t_reservation_history
+        constraintName: FK6iwyrgcrxw19umukmsw5u04ax
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: RESTRICT
+        onUpdate: RESTRICT
+        referencedColumnNames: id
+        referencedTableName: t_user
+        validate: true
+

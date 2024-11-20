@@ -1,0 +1,11 @@
+version: '4'
+services: 
+  mysql:
+    image: mysql:8.3.0
+    container_name: mysql-room-availability
+    environment:
+      MYSQL_ROOT_PASWORD: mysql
+    ports:
+      - "3006:3006"
+    volumes:
+      - ./mysql:/var/lib/mysql
