@@ -10,7 +10,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
 
 public record ReservationRequest(@JsonProperty("user_id")
     @NotNull(message = "User ID cannot be null")
