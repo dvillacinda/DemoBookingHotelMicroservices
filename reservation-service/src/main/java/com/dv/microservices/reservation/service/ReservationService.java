@@ -12,7 +12,6 @@ import com.dv.microservices.reservation.repository.ReservationRepository;
 
 import lombok.RequiredArgsConstructor;
 
-
 @Service
 @RequiredArgsConstructor
 public class ReservationService {

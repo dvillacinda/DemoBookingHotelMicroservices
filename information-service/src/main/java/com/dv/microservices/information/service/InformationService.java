@@ -1,5 +1,6 @@
 package com.dv.microservices.information.service;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
@@ -29,5 +30,9 @@ public class InformationService {
             return information.getPrice(); 
         }
         return 0.0f; 
+    }
+
+    public List<Information> getAllInformations(){
+        return informationRepository.findAll(); 
     }
 }

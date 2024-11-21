@@ -1,6 +1,7 @@
 package com.dv.microservices.room.service;
 
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
@@ -40,6 +41,20 @@ public class RoomAvailabilityService {
 
     public float getPrice(int roomId){
         return informationClient.getPrice(roomId);
+        
+    }
+
+    public void saveAll(){
+        try {
+            List<Integer> roomsId = informationClient.getRoomsId();
+            for (int roomId : roomsId) {
+                RoomAvailability roomAvailability = new RoomAvailability();
+                roomAvailability.setRoomId(roomId);
+                roomRepository.save(roomAvailability);
+            }
+        } catch (Exception e) {
+            System.err.println("Failed to fetch or save room data: " + e.getMessage());
+        }
         
     }
     

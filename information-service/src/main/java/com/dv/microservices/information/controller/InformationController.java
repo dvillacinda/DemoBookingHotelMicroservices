@@ -1,5 +1,8 @@
 package com.dv.microservices.information.controller;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -10,6 +13,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.dv.microservices.information.dto.InformationRequest;
+import com.dv.microservices.information.model.Information;
 import com.dv.microservices.information.service.InformationService;
 
 import jakarta.validation.Valid;
@@ -33,5 +37,15 @@ public class InformationController {
     @ResponseStatus(HttpStatus.OK)
     public float getPrice(@RequestParam int roomNumber){
         return informationService.getPrice(roomNumber);
+    }
+
+    @GetMapping("/get-rooms-id")
+    @ResponseStatus(HttpStatus.OK)
+    public List<Integer> getAllRoomsId(){
+        List<Integer> roomIds = new ArrayList<>();
+        for(Information information : informationService.getAllInformations()){
+            roomIds.add(information.getRoomNumber());
+        }
+        return roomIds; 
     }
 }

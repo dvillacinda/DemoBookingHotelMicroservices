@@ -9,6 +9,7 @@ import com.dv.microservices.room.model.RoomAvailability;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 
@@ -18,9 +19,9 @@ public record RoomAvailabilityRequest(
     @JsonProperty("room_id")
     int roomId,
 
-    @NotNull(message="Reservation id cannot be null")
+    @NotBlank(message="Reservation id cannot be null")
     @JsonProperty("reservation_id")
-    int reservationId,
+    String reservationId,
 
     @JsonProperty("blocked_period")
     @Valid List<BlockedPeriodRequest> blockedPeriod,
