@@ -1,6 +1,6 @@
 databaseChangeLog:
 - changeSet:
-    id: 1732075846832-1
+    id: 1732171957451-1
     author: diego (generated)
     changes:
     - createTable:
@@ -28,7 +28,7 @@ databaseChangeLog:
             type: datetime
         tableName: t_blocked_period
 - changeSet:
-    id: 1732075846832-2
+    id: 1732171957451-2
     author: diego (generated)
     changes:
     - createTable:
@@ -56,7 +56,7 @@ databaseChangeLog:
             type: datetime
         tableName: t_reservation_dates
 - changeSet:
-    id: 1732075846832-3
+    id: 1732171957451-3
     author: diego (generated)
     changes:
     - createTable:
@@ -73,9 +73,12 @@ databaseChangeLog:
               primaryKey: true
             name: id
             type: BIGINT
+        - column:
+            name: reservation_id
+            type: VARCHAR(255)
         tableName: t_room_availability
 - changeSet:
-    id: 1732075846832-4
+    id: 1732171957451-4
     author: diego (generated)
     changes:
     - createIndex:
@@ -86,7 +89,7 @@ databaseChangeLog:
         indexName: FK4npkvrw4ly8u4hvh2ulyb5p2p
         tableName: t_reservation_dates
 - changeSet:
-    id: 1732075846832-5
+    id: 1732171957451-5
     author: diego (generated)
     changes:
     - createIndex:
@@ -97,7 +100,7 @@ databaseChangeLog:
         indexName: FK80001itrcglcrjm3lms80gdh6
         tableName: t_blocked_period
 - changeSet:
-    id: 1732075846832-6
+    id: 1732171957451-6
     author: diego (generated)
     changes:
     - addForeignKeyConstraint:
@@ -112,7 +115,7 @@ databaseChangeLog:
         referencedTableName: t_room_availability
         validate: true
 - changeSet:
-    id: 1732075846832-7
+    id: 1732171957451-7
     author: diego (generated)
     changes:
     - addForeignKeyConstraint:

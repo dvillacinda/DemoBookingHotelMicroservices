@@ -1,6 +1,5 @@
 package com.dv.microservices.reservation.service;
 
-import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
@@ -11,7 +10,6 @@ import com.dv.microservices.reservation.model.Reservation;
 import com.dv.microservices.reservation.repository.ReservationRepository;
 
 import lombok.RequiredArgsConstructor;
-
 
 @Service
 @RequiredArgsConstructor

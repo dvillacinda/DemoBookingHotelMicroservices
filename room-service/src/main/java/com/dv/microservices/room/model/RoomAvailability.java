@@ -34,8 +34,8 @@ public class RoomAvailability {
     @OneToMany(mappedBy = "roomAvailability",cascade = CascadeType.ALL, orphanRemoval = true)
     private List<BlockedPeriod> blockedPeriod; 
 
-    @Column(nullable = false)
-    private int reservationId; 
+    @Column(nullable = true)
+    private String reservationId; 
 
     @Column(nullable = true)
     @OneToMany(mappedBy = "roomAvailability",cascade = CascadeType.ALL, orphanRemoval = true)
