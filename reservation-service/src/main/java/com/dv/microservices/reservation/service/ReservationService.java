@@ -1,8 +1,5 @@
 package com.dv.microservices.reservation.service;
 
-
-import java.util.UUID;
-
 import org.springframework.stereotype.Service;
 
 import com.dv.microservices.reservation.client.RoomClient;
@@ -19,10 +16,9 @@ public class ReservationService {
     private final ReservationRepository reservationRepository; 
     private final RoomClient roomClient; 
     
-    public void saveReservation(ReservationRequest reservationRequest){
+    public void initReservation(ReservationRequest reservationRequest){
         //map reservation request to reservation object 
         Reservation reservation = reservationRequest.toReservation();
-        reservation.setId(UUID.randomUUID().toString());
         
         //Conversation
         int roomId = roomClient.getRoomID(reservation.getId()); 
@@ -30,8 +26,13 @@ public class ReservationService {
         float price = roomClient.getPrice(roomId);
         reservation.setTotalPrice(price);
 
-        //save reservation to reservation repository 
-        reservationRepository.save(reservation); 
+        
+    }
+
+    public void completeReservation(ReservationRequest reservationRequest){
+        Reservation reservation = reservationRequest.toReservation();
+
+        reservationRepository.save(reservation);
     }
 
     

@@ -21,9 +21,16 @@ public class ReservationController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public String placeReservation(@Valid @RequestBody ReservationRequest reservationRequest){
-        reservationService.saveReservation(reservationRequest);
-        return "Reservation Placed Successfully!";
+    public String initReservation(@Valid @RequestBody ReservationRequest reservationRequest){
+        reservationService.initReservation(reservationRequest);
+        return "Reservation start";
+    }
+
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public String completeReservation(@Valid @RequestBody ReservationRequest reservationRequest){
+        reservationService.completeReservation(reservationRequest);
+        return "Placed Reservation successfully";
     }
     
 }

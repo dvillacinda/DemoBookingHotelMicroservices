@@ -2,6 +2,7 @@ package com.dv.microservices.reservation.dto;
 
 
 import java.time.LocalDate;
+import java.util.UUID;
 
 import com.dv.microservices.reservation.model.Reservation;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -11,9 +12,18 @@ import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotNull;
 
-public record ReservationRequest(@JsonProperty("user_id")
+public record ReservationRequest(
+    
+    String id,
+    
+    @JsonProperty("user_id")
     @NotNull(message = "User ID cannot be null")
     Integer userId,
+
+    @JsonProperty("room_id")
+    Integer roomId,
+
+    Float price,
 
     @JsonProperty("start_date")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
@@ -45,13 +55,14 @@ public record ReservationRequest(@JsonProperty("user_id")
     String cancellationReason) {
 
     public Reservation toReservation() {
+        String reservationId = id().isEmpty() ? UUID.randomUUID().toString(): id();
         return new Reservation(
-            null,
+            reservationId,
             userId,
-            null,
+            roomId,
             startDate,
             endDate,
-            null,
+            price,
             status,
             reservationDate,
             paymentStatus,
