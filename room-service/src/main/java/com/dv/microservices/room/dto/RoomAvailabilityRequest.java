@@ -18,6 +18,9 @@ public record RoomAvailabilityRequest(
     @JsonProperty("room_id")
     int roomId,
 
+    @NotNull(message="Reservation id cannot be null")
+    @JsonProperty("reservation_id")
+    int reservationId,
 
     @JsonProperty("blocked_period")
     @Valid List<BlockedPeriodRequest> blockedPeriod,
@@ -31,6 +34,7 @@ public record RoomAvailabilityRequest(
         // create and return the entity 
         RoomAvailability roomAvailability = new RoomAvailability();
         roomAvailability.setRoomId(this.roomId());
+        roomAvailability.setReservationId(reservationId);
 
         // mapped Block Period Request to Block Period
         List<BlockedPeriod> blockedPeriods = null;

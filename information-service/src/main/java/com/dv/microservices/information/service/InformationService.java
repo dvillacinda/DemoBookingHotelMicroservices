@@ -1,5 +1,7 @@
 package com.dv.microservices.information.service;
 
+import java.util.Optional;
+
 import org.springframework.stereotype.Service;
 
 import com.dv.microservices.information.dto.InformationRequest;
@@ -18,5 +20,14 @@ public class InformationService {
 
         informationRepository.save(info);
 
+    }
+
+    public float getPrice(int roomNumber){
+        Optional<Information> iOptional = informationRepository.findByRoomNumber(roomNumber);
+        if(iOptional.isPresent()){
+            Information information = iOptional.get(); 
+            return information.getPrice(); 
+        }
+        return 0.0f; 
     }
 }

@@ -16,10 +16,6 @@ public record ReservationRequest(@JsonProperty("user_id")
     @NotNull(message = "User ID cannot be null")
     Integer userId,
 
-    @JsonProperty("room_id")
-    @NotNull(message = "Room ID cannot be null")
-    Integer roomId,
-
     @JsonProperty("start_date")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     @NotNull(message = "Start date cannot be null")
@@ -32,10 +28,6 @@ public record ReservationRequest(@JsonProperty("user_id")
     @Future(message = "End date must be future date")
     LocalDate endDate,
 
-    @JsonProperty("total_price")
-    @NotNull(message = "Total price cannot be null")
-    @Positive(message = "Total price must be positive")
-    Float totalPrice,
 
     @NotNull(message = "Status cannot be null")
     Boolean status,
@@ -57,10 +49,10 @@ public record ReservationRequest(@JsonProperty("user_id")
         return new Reservation(
             null,
             userId,
-            roomId,
+            null,
             startDate,
             endDate,
-            totalPrice,
+            null,
             status,
             reservationDate,
             paymentStatus,
