@@ -3,6 +3,7 @@ package com.dv.microservices.room.service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 import com.dv.microservices.room.client.InformationClient;
 import com.dv.microservices.room.dto.ReservationRequest;
 import com.dv.microservices.room.dto.RoomAvailabilityRequest;
+import com.dv.microservices.room.model.ReservationDates;
 import com.dv.microservices.room.model.RoomAvailability;
 import com.dv.microservices.room.repository.RoomAvailabilityRepository;
 
@@ -62,7 +64,7 @@ public class RoomAvailabilityService {
 
     }
 
-    public List<RoomAvailability> initSelectedRoom(ReservationRequest request) {
+    public List<RoomAvailability> selectAvailableRooms(ReservationRequest request) {
         LocalDateTime startDate = request.startDate().atTime(CHECK_IN);
         LocalDateTime endDate = request.endDate().atTime(CHECK_OUT);
 
@@ -70,8 +72,20 @@ public class RoomAvailabilityService {
 
     }
 
-    public int selectRoom(List<RoomAvailability>roomAvailabilities){
-        return 0;
+    public void updateRoomWithReservationParams(
+            String reservationId, LocalDate startDate, LocalDate endDate, int roomId) {
+            Optional<RoomAvailability> rOptional = roomRepository.findByRoomId(roomId);
+            if(rOptional.isPresent()){
+                RoomAvailability roomAvailability = rOptional.get();
+                List<ReservationDates> reservationDates = new ArrayList<>(); 
+                reservationDates.add(new ReservationDates(startDate.atTime(CHECK_IN), endDate.atTime(CHECK_OUT),roomAvailability));
+                
+                roomAvailability.setReservationId(reservationId);
+                roomAvailability.setReservationDates(reservationDates);
+
+                roomRepository.save(roomAvailability); 
+            }
+        
     }
 
 }

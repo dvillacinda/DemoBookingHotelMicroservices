@@ -3,19 +3,19 @@ package com.dv.microservices.room.controller;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.dv.microservices.room.dto.ReservationRequest;
 import com.dv.microservices.room.dto.RoomAvailabilityRequest;
+import com.dv.microservices.room.dto.RoomSelectionRequest;
 import com.dv.microservices.room.model.RoomAvailability;
 import com.dv.microservices.room.service.RoomAvailabilityService;
+import com.dv.microservices.room.service.RoomSelectionManager;
 import com.dv.microservices.room.service.UserSelectionService;
 
 import jakarta.validation.Valid;
@@ -25,44 +25,50 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("api/room")
 @RequiredArgsConstructor
 public class RoomAvailabilityController {
-    private final RoomAvailabilityService roomAvailabilityService;
-    private final UserSelectionService userSelectionService; 
+    private final RoomAvailabilityService roomAService;
+    private final UserSelectionService userSelectionService;
+    private final RoomSelectionManager roomSelectionManager;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public String placeRoom(@Valid @RequestBody RoomAvailabilityRequest roomAvailabilityRequest) {
-        roomAvailabilityService.saveRoomAvailability(roomAvailabilityRequest);
+        roomAService.saveRoomAvailability(roomAvailabilityRequest);
         return "Room Availability Placed Successfully!";
     }
 
-    /*@GetMapping("/get-room-id")
-
-    @ResponseStatus(HttpStatus.OK)
-    public int getRoomID(@RequestParam String reservationId) {
-        return roomAvailabilityService.getRoomID(reservationId);
-    }
-
-    @GetMapping("/get-price")
-
-    @ResponseStatus(HttpStatus.OK)
-    public float getPrice(@RequestParam int roomId) {
-        return roomAvailabilityService.getPrice(roomId);
-    }*/
-
+    
     @PutMapping("/process-room-selection")
     @ResponseStatus(HttpStatus.OK)
     public ReservationRequest processRoomSelection(@RequestBody ReservationRequest request) {
-        List<RoomAvailability> availableRooms = roomAvailabilityService.initSelectedRoom(request);
+        List<RoomAvailability> availableRooms = roomAService.selectAvailableRooms(request);
         if (availableRooms.isEmpty()) {
             return null;
         }
-        RoomAvailability selectedRoom =  userSelectionService.promptUserForRoomSelection(availableRooms);
+
+        RoomAvailability selectedRoom = roomSelectionManager.promptUserForRoomSelectionWithTimeout(
+                availableRooms,
+                request.id(),
+                30 // Timeout 30 sec
+        );
+
         if (selectedRoom == null) {
             return null;
         }
 
+        roomAService.updateRoomWithReservationParams(request.id(),request.startDate(), request.endDate(), request.roomId());
+
         return request.withUpdatedRoomAndPrice(
                 selectedRoom.getRoomId(),
-                roomAvailabilityService.getPrice(selectedRoom.getRoomId()));
+                roomAService.getPrice(selectedRoom.getRoomId()));
+    }
+
+    @PostMapping("/user-select-room")
+    @ResponseStatus(HttpStatus.OK)
+    public String userSelectRoom(@RequestBody RoomSelectionRequest selectionRequest) {
+        boolean success = roomSelectionManager.handleUserSelection(
+                selectionRequest.reservationId(), 
+                selectionRequest.roomId());
+        
+        return success ? "Room selection successful." : "Invalid selection or timeout reached.";
     }
 }

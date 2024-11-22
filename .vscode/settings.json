@@ -2,12 +2,23 @@
     "java.configuration.updateBuildConfiguration": "automatic",
     "java.compile.nullAnalysis.mode": "automatic",
     "cSpell.words": [
+        "alcanzado",
+        "Bloquea",
         "datasource",
+        "habitación",
         "jdbc",
         "liquibase",
+        "Notificando",
         "openfeign",
+        "procesada",
         "projectlombok",
-        "springframework"
+        "selección",
+        "seleccionada",
+        "seleccionar",
+        "seleccione",
+        "springframework",
+        "usuario",
+        "Validar"
     ],
     "workbench.colorCustomizations": {
         "activityBar.activeBackground": "#2f7c47",
