@@ -11,12 +11,6 @@ import com.dv.microservices.reservation.dto.ReservationRequest;
 @FeignClient(value = "Room", url= "http://localhost:8082")
 public interface RoomClient {
 
-    @RequestMapping(method = RequestMethod.GET, value = "/api/room/get-room-id")
-    int getRoomID(@RequestParam String reservationId); 
-
-    @RequestMapping(method = RequestMethod.GET, value = "/api/room/get-price")
-    float getPrice(@RequestParam int roomId);
-
     @RequestMapping(method = RequestMethod.PUT, value = "/process-room-selection")
     ReservationRequest getRoomParams(@RequestBody ReservationRequest request); 
 
