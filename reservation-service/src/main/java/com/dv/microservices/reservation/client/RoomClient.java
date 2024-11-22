@@ -12,16 +12,18 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.dv.microservices.reservation.dto.ReservationRequest;
 import com.dv.microservices.reservation.dto.RoomRequest;
 
-@FeignClient(value = "Room", url= "http://localhost:8082")
+@FeignClient(value = "Room", url = "http://localhost:8082")
 public interface RoomClient {
-    static final String API = "/api/room"; 
+    static final String API = "/api/room";
 
-    @RequestMapping(method = RequestMethod.PUT, value = API+"/process-room-selection")
+    @RequestMapping(method = RequestMethod.PUT, value = API + "/process-room-selection")
     ReservationRequest getRoomParams(@RequestBody ReservationRequest request);
-    
-    @RequestMapping(method = RequestMethod.GET, value= API+"/get-list")
-    List<RoomRequest> getListAvailableRoom(@RequestParam LocalDate startDate, @RequestParam LocalDate enDate); 
+
+    @RequestMapping(method = RequestMethod.GET, value = API + "/get-list")
+    List<RoomRequest> getListAvailableRoom(@RequestParam LocalDate startDate, @RequestParam LocalDate enDate);
+
+    @RequestMapping(method = RequestMethod.PUT, value = API + "/set-reservation-values")
+    void setReservationParamsToStorage(
+            @RequestParam int roomId, @RequestBody ReservationRequest reservationRequest);
 
 }
-
-

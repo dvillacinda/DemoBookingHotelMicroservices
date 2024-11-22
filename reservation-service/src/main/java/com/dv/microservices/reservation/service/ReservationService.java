@@ -20,17 +20,6 @@ public class ReservationService {
     private final ReservationRepository reservationRepository;
     private final RoomClient roomClient;
 
-    public void initReservation(ReservationRequest reservationRequest) {
-        
-        ReservationRequest request = roomClient.getRoomParams(reservationRequest);
-        if(request == null){
-            System.out.println("Could not complete reservation: room selection failed.");
-        }else{
-            completeReservation(request);
-        }
-        
-    }
-
     public void completeReservation(ReservationRequest reservationRequest) {
         Reservation reservation = reservationRequest.toReservation();
 
@@ -40,6 +29,10 @@ public class ReservationService {
 
     public List<RoomRequest> getAvailableRoom(LocalDate starDate, LocalDate enDate){
         return roomClient.getListAvailableRoom(starDate, enDate);
+    }
+
+    public void setRoomParamsToStorage(int roomId, ReservationRequest reservationRequest){
+        roomClient.setReservationParamsToStorage(roomId, reservationRequest);
     }
 
 

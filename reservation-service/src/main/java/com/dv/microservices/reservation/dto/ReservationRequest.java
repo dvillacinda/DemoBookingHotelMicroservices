@@ -17,7 +17,6 @@ public record ReservationRequest(
     String id,
     
     @JsonProperty("user_id")
-    @NotNull(message = "User ID cannot be null")
     Integer userId,
 
     @JsonProperty("room_id")
@@ -55,7 +54,7 @@ public record ReservationRequest(
     String cancellationReason) {
 
     public Reservation toReservation() {
-        String reservationId = id().isEmpty() ? UUID.randomUUID().toString(): id();
+        String reservationId = (id() == null || id().isBlank()) ? UUID.randomUUID().toString() : id();
         return new Reservation(
             reservationId,
             userId,

@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,6 +22,7 @@ import com.dv.microservices.reservation.dto.RoomRequest;
 import com.dv.microservices.reservation.service.CacheService;
 import com.dv.microservices.reservation.service.ReservationService;
 
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
@@ -31,11 +33,25 @@ public class ReservationController {
     private final ReservationService reservationService;
     private final CacheService cacheService;
 
-    @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public String initReservation(@Valid @RequestBody ReservationRequest reservationRequest) {
-        reservationService.initReservation(reservationRequest);
-        return "Reservation start";
+    @GetMapping("/init-reservation")
+    public ResponseEntity<String> initReservation(@Valid @RequestBody ReservationRequest reservationRequest,
+            HttpSession session) {
+        String reservationId = UUID.randomUUID().toString();
+        reservationRequest = new ReservationRequest(
+                reservationId,
+                1,
+                reservationRequest.roomId(),
+                reservationRequest.price(),
+                reservationRequest.startDate(),
+                reservationRequest.endDate(),
+                reservationRequest.status(),
+                reservationRequest.reservationDate(),
+                reservationRequest.paymentStatus(),
+                reservationRequest.cancellationReason());
+        cacheService.storeReservationRequest(reservationRequest.id(), reservationRequest);
+        
+        session.setAttribute("reservationId", reservationId);
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     @PostMapping
@@ -48,30 +64,35 @@ public class ReservationController {
     @GetMapping("/get-available-rooms")
     public ResponseEntity<Map<String, Object>> getAvailableRooms(
             @RequestParam LocalDate startDate,
-            @RequestParam LocalDate endDate) {
+            @RequestParam LocalDate endDate,
+            HttpSession session) {
 
         // generate list room
         List<RoomRequest> roomRequests = reservationService.getAvailableRoom(startDate, endDate);
 
         String listId = UUID.randomUUID().toString();
-
-        cacheService.store(listId, roomRequests);
+        cacheService.storeRoomRequest(listId, roomRequests);
+        session.setAttribute("listId", listId);
 
         // build the response
         Map<String, Object> response = new HashMap<>();
-        response.put("listId", listId);
         response.put("rooms", roomRequests);
 
         return ResponseEntity.ok(response);
     }
 
     @GetMapping("/select-room-by-position")
-    public ResponseEntity<RoomRequest> selectRoomByPosition(
-            @RequestParam String listId,
+    public ResponseEntity<String> selectRoomByPosition(
+            HttpSession session,
             @RequestParam int position) {
 
+        String listId = (String) session.getAttribute("listId");
+        if (listId == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Room list not found for the current session.");
+        }
+
         // return the cache list
-        List<RoomRequest> roomRequests = cacheService.retrieve(listId);
+        List<RoomRequest> roomRequests = cacheService.retrieveRoomRequests(listId);
 
         if (roomRequests == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
@@ -84,7 +105,29 @@ public class ReservationController {
 
         RoomRequest selectedRoom = roomRequests.get(position);
 
-        return ResponseEntity.ok(selectedRoom);
+        try {
+            String reservationId = (String) session.getAttribute("reservationId");
+            ReservationRequest reservationRequest = cacheService.retrieveReservationRequest(reservationId);
+            ReservationRequest request = new ReservationRequest(
+                reservationId,
+                1,
+                selectedRoom.roomId(),
+                selectedRoom.price(),
+                reservationRequest.startDate(),
+                reservationRequest.endDate(),
+                false,
+                reservationRequest.reservationDate(),
+                false,
+                null
+            );
+            reservationService.completeReservation(request);
+            reservationService.setRoomParamsToStorage(selectedRoom.roomId(), request);
+            return ResponseEntity.status(HttpStatus.CREATED)
+                    .body("Room storage successfully");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Failed to reserve room. Please try again later.");
+        }
     }
 
 }

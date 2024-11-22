@@ -82,18 +82,17 @@ public class RoomAvailabilityService {
         LocalDateTime startDateTime = startDate.atTime(CHECK_IN);
         LocalDateTime endDateTime = endDate.atTime(CHECK_OUT);
         String description = "";
-        float price = 0f ;      
-        
+        float price = 0f;
+
         List<RoomAvailability> roomAvailabilities = roomRepository.findAvailableRoomsBetweenDates(startDateTime,
                 endDateTime);
         List<RoomRequest> roomRequests = new ArrayList<>();
-        if(!roomAvailabilities.isEmpty()){
-            for(RoomAvailability room: roomAvailabilities){
+        if (!roomAvailabilities.isEmpty()) {
+            for (RoomAvailability room : roomAvailabilities) {
                 price = getPrice(room.getRoomId());
                 description = getDescription(room.getRoomId());
                 roomRequests.add(
-                    new RoomRequest(room.getRoomId(), description, price)
-                );
+                        new RoomRequest(room.getRoomId(), description, price));
                 return roomRequests;
             }
         }
@@ -115,6 +114,23 @@ public class RoomAvailabilityService {
             roomRepository.save(roomAvailability);
         }
 
+    }
+
+    public void setReservationValues(int roomId, ReservationRequest request) {
+        Optional<RoomAvailability> roomOptional = roomRepository.findByRoomId(roomId);
+        if (roomOptional.isPresent()) {
+            RoomAvailability room = roomOptional.get();
+            List<ReservationDates> reservationDates = new ArrayList<>();
+            reservationDates.add(
+                    new ReservationDates(request.startDate().atTime(CHECK_IN),
+                            request.endDate().atTime(CHECK_OUT),
+                            room));
+
+            room.setReservationId(request.id());
+            room.setReservationDates(reservationDates);
+
+            roomRepository.save(room);
+        }
     }
 
 }
