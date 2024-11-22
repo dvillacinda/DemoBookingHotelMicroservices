@@ -10,10 +10,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 @FeignClient(value = "Information",url = "http://localhost:8084")
 
 public interface InformationClient {
-    final String CONST = "/api/info";
-    @RequestMapping(method=RequestMethod.GET, value = CONST+"/get-price")
+    static final String API = "/api/info";
+
+    @RequestMapping(method=RequestMethod.GET, value = API+"/get-price")
     float getPrice(@RequestParam("roomNumber") int roomNumber); 
 
-    @RequestMapping(method = RequestMethod.GET, value = CONST+"/get-rooms-id")
+    @RequestMapping(method=RequestMethod.GET, value = API+"/get-description")
+    String getDescription(@RequestParam("roomNumber") int roomNumber);
+
+    @RequestMapping(method = RequestMethod.GET, value = API+"/get-rooms-id")
     List<Integer> getRoomsId(); 
 }

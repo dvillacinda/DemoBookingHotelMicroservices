@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import com.dv.microservices.room.client.InformationClient;
 import com.dv.microservices.room.dto.ReservationRequest;
 import com.dv.microservices.room.dto.RoomAvailabilityRequest;
+import com.dv.microservices.room.dto.RoomRequest;
 import com.dv.microservices.room.model.ReservationDates;
 import com.dv.microservices.room.model.RoomAvailability;
 import com.dv.microservices.room.repository.RoomAvailabilityRepository;
@@ -50,6 +51,11 @@ public class RoomAvailabilityService {
 
     }
 
+    public String getDescription(int roomId) {
+        return informationClient.getDescription(roomId);
+
+    }
+
     public void saveAll() {
         try {
             List<Integer> roomsId = informationClient.getRoomsId();
@@ -72,20 +78,43 @@ public class RoomAvailabilityService {
 
     }
 
+    public List<RoomRequest> selectAvailableRoomsRequests(LocalDate startDate, LocalDate endDate) {
+        LocalDateTime startDateTime = startDate.atTime(CHECK_IN);
+        LocalDateTime endDateTime = endDate.atTime(CHECK_OUT);
+        String description = "";
+        float price = 0f ;      
+        
+        List<RoomAvailability> roomAvailabilities = roomRepository.findAvailableRoomsBetweenDates(startDateTime,
+                endDateTime);
+        List<RoomRequest> roomRequests = new ArrayList<>();
+        if(!roomAvailabilities.isEmpty()){
+            for(RoomAvailability room: roomAvailabilities){
+                price = getPrice(room.getRoomId());
+                description = getDescription(room.getRoomId());
+                roomRequests.add(
+                    new RoomRequest(room.getRoomId(), description, price)
+                );
+                return roomRequests;
+            }
+        }
+        return null;
+    }
+
     public void updateRoomWithReservationParams(
             String reservationId, LocalDate startDate, LocalDate endDate, int roomId) {
-            Optional<RoomAvailability> rOptional = roomRepository.findByRoomId(roomId);
-            if(rOptional.isPresent()){
-                RoomAvailability roomAvailability = rOptional.get();
-                List<ReservationDates> reservationDates = new ArrayList<>(); 
-                reservationDates.add(new ReservationDates(startDate.atTime(CHECK_IN), endDate.atTime(CHECK_OUT),roomAvailability));
-                
-                roomAvailability.setReservationId(reservationId);
-                roomAvailability.setReservationDates(reservationDates);
+        Optional<RoomAvailability> rOptional = roomRepository.findByRoomId(roomId);
+        if (rOptional.isPresent()) {
+            RoomAvailability roomAvailability = rOptional.get();
+            List<ReservationDates> reservationDates = new ArrayList<>();
+            reservationDates
+                    .add(new ReservationDates(startDate.atTime(CHECK_IN), endDate.atTime(CHECK_OUT), roomAvailability));
 
-                roomRepository.save(roomAvailability); 
-            }
-        
+            roomAvailability.setReservationId(reservationId);
+            roomAvailability.setReservationDates(reservationDates);
+
+            roomRepository.save(roomAvailability);
+        }
+
     }
 
 }

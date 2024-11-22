@@ -39,6 +39,12 @@ public class InformationController {
         return informationService.getPrice(roomNumber);
     }
 
+    @GetMapping("/get-description")
+    @ResponseStatus(HttpStatus.OK)
+    public String getDescription(@RequestParam int roomNumber){
+        return informationService.getDescription(roomNumber);
+    }
+
     @GetMapping("/get-rooms-id")
     @ResponseStatus(HttpStatus.OK)
     public List<Integer> getAllRoomsId(){

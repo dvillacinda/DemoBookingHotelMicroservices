@@ -32,6 +32,15 @@ public class InformationService {
         return 0.0f; 
     }
 
+    public String getDescription(int roomNumber){
+        Optional<Information> iOptional = informationRepository.findByRoomNumber(roomNumber);
+        if(iOptional.isPresent()){
+            Information information = iOptional.get();
+            return information.getDescription();
+        }
+        return null; 
+    }
+
     public List<Information> getAllInformations(){
         return informationRepository.findAll(); 
     }

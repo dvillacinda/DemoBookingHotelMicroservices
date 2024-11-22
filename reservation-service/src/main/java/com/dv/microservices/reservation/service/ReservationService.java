@@ -1,9 +1,13 @@
 package com.dv.microservices.reservation.service;
 
+import java.time.LocalDate;
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 import com.dv.microservices.reservation.client.RoomClient;
 import com.dv.microservices.reservation.dto.ReservationRequest;
+import com.dv.microservices.reservation.dto.RoomRequest;
 import com.dv.microservices.reservation.model.Reservation;
 import com.dv.microservices.reservation.repository.ReservationRepository;
 
@@ -33,5 +37,10 @@ public class ReservationService {
         reservationRepository.save(reservation);
         System.out.println("Reservation successfully completed: " + reservation.getId());
     }
+
+    public List<RoomRequest> getAvailableRoom(LocalDate starDate, LocalDate enDate){
+        return roomClient.getListAvailableRoom(starDate, enDate);
+    }
+
 
 }
