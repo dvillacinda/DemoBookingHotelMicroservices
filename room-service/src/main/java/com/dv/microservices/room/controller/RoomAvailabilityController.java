@@ -16,7 +16,6 @@ import com.dv.microservices.room.dto.RoomSelectionRequest;
 import com.dv.microservices.room.model.RoomAvailability;
 import com.dv.microservices.room.service.RoomAvailabilityService;
 import com.dv.microservices.room.service.RoomSelectionManager;
-import com.dv.microservices.room.service.UserSelectionService;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +25,6 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class RoomAvailabilityController {
     private final RoomAvailabilityService roomAService;
-    private final UserSelectionService userSelectionService;
     private final RoomSelectionManager roomSelectionManager;
 
     @PostMapping
