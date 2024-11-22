@@ -13,27 +13,25 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ReservationService {
 
-    private final ReservationRepository reservationRepository; 
-    private final RoomClient roomClient; 
-    
-    public void initReservation(ReservationRequest reservationRequest){
-        //map reservation request to reservation object 
-        Reservation reservation = reservationRequest.toReservation();
-        
-        //Conversation
-        int roomId = roomClient.getRoomID(reservation.getId()); 
-        reservation.setRoomId(roomId);
-        float price = roomClient.getPrice(roomId);
-        reservation.setTotalPrice(price);
+    private final ReservationRepository reservationRepository;
+    private final RoomClient roomClient;
 
+    public void initReservation(ReservationRequest reservationRequest) {
+        
+        ReservationRequest request = roomClient.getRoomParams(reservationRequest);
+        if(request == null){
+            System.out.println("Could not complete reservation: room selection failed.");
+        }else{
+            completeReservation(request);
+        }
         
     }
 
-    public void completeReservation(ReservationRequest reservationRequest){
+    public void completeReservation(ReservationRequest reservationRequest) {
         Reservation reservation = reservationRequest.toReservation();
 
         reservationRepository.save(reservation);
+        System.out.println("Reservation successfully completed: " + reservation.getId());
     }
 
-    
 }
