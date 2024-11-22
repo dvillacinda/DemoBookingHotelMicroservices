@@ -16,9 +16,6 @@ import com.dv.microservices.reservation.dto.RoomRequest;
 public interface RoomClient {
     static final String API = "/api/room";
 
-    @RequestMapping(method = RequestMethod.PUT, value = API + "/process-room-selection")
-    ReservationRequest getRoomParams(@RequestBody ReservationRequest request);
-
     @RequestMapping(method = RequestMethod.GET, value = API + "/get-list")
     List<RoomRequest> getListAvailableRoom(@RequestParam LocalDate startDate, @RequestParam LocalDate enDate);
 

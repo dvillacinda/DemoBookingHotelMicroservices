@@ -70,14 +70,7 @@ public class RoomAvailabilityService {
 
     }
 
-    public List<RoomAvailability> selectAvailableRooms(ReservationRequest request) {
-        LocalDateTime startDate = request.startDate().atTime(CHECK_IN);
-        LocalDateTime endDate = request.endDate().atTime(CHECK_OUT);
-
-        return roomRepository.findAvailableRoomsBetweenDates(startDate, endDate);
-
-    }
-
+    
     public List<RoomRequest> selectAvailableRoomsRequests(LocalDate startDate, LocalDate endDate) {
         LocalDateTime startDateTime = startDate.atTime(CHECK_IN);
         LocalDateTime endDateTime = endDate.atTime(CHECK_OUT);
@@ -99,22 +92,7 @@ public class RoomAvailabilityService {
         return null;
     }
 
-    public void updateRoomWithReservationParams(
-            String reservationId, LocalDate startDate, LocalDate endDate, int roomId) {
-        Optional<RoomAvailability> rOptional = roomRepository.findByRoomId(roomId);
-        if (rOptional.isPresent()) {
-            RoomAvailability roomAvailability = rOptional.get();
-            List<ReservationDates> reservationDates = new ArrayList<>();
-            reservationDates
-                    .add(new ReservationDates(startDate.atTime(CHECK_IN), endDate.atTime(CHECK_OUT), roomAvailability));
 
-            roomAvailability.setReservationId(reservationId);
-            roomAvailability.setReservationDates(reservationDates);
-
-            roomRepository.save(roomAvailability);
-        }
-
-    }
 
     public void setReservationValues(int roomId, ReservationRequest request) {
         Optional<RoomAvailability> roomOptional = roomRepository.findByRoomId(roomId);
