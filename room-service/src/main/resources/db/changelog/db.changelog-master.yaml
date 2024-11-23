@@ -2,6 +2,11 @@ databaseChangeLog:
 - changeSet:
     id: 1732171957451-1
     author: diego (generated)
+    preConditions:
+        - onFail: MARK_RAN
+        - not:
+            - tableExists:
+                tableName: t_room_availability
     changes:
     - createTable:
         columns:
