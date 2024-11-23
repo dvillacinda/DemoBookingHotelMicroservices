@@ -62,10 +62,11 @@ public class ReservationController {
 
     @GetMapping("/get-available-rooms")
     public ResponseEntity<Map<String, Object>> getAvailableRooms(
-            @RequestParam LocalDate startDate,
-            @RequestParam LocalDate endDate,
+            @RequestParam String startString,
+            @RequestParam String endString,
             HttpSession session) {
-
+        LocalDate startDate = LocalDate.parse(startString);
+        LocalDate endDate = LocalDate.parse(endString); 
         // generate list room
         List<RoomRequest> roomRequests = reservationService.getAvailableRoom(startDate, endDate);
 
