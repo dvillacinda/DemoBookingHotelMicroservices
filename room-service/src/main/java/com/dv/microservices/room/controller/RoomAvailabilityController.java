@@ -39,11 +39,11 @@ public class RoomAvailabilityController {
 
     @GetMapping("/get-list")
     @ResponseStatus(HttpStatus.OK)
-    public List<RoomRequest> getAvailableRoomRequests(@RequestParam String starDate,
+    public List<RoomRequest> getAvailableRoomRequests(@RequestParam String startDate,
             @RequestParam String endDate) {
 
-        return roomAService.selectAvailableRoomsRequests(LocalDate.parse(starDate), LocalDate.parse(endDate));
-    }
+        return roomAService.selectAvailableRoomsRequests(LocalDate.parse(startDate), LocalDate.parse(endDate));
+    }   
 
     @PutMapping("/set-reservation-values")
     public ResponseEntity<String> setReservationValues(
