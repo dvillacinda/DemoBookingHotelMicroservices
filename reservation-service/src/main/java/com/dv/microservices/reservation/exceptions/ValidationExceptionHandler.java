@@ -14,27 +14,32 @@ public class ValidationExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<String> handleValidationExceptions(MethodArgumentNotValidException ex) {
         String firstInterpolatedMessage = ex.getBindingResult().getFieldErrors().stream()
-        .map(error -> error.getDefaultMessage())
-        .findFirst()
-        .orElse("Unknown validation error");
+                .map(error -> error.getDefaultMessage())
+                .findFirst()
+                .orElse("Unknown validation error");
 
-        return new ResponseEntity<>("Error: "+ firstInterpolatedMessage, HttpStatus.BAD_REQUEST);
-}
+        return new ResponseEntity<>("Error: " + firstInterpolatedMessage, HttpStatus.BAD_REQUEST);
+    }
 
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<String> handleConstraintViolationException(ConstraintViolationException ex) {
         String firstInterpolatedMessage = ex.getConstraintViolations().stream()
-            .map(violation -> violation.getMessage())
-            .findFirst()
-            .orElse("Unknown validation error");
+                .map(violation -> violation.getMessage())
+                .findFirst()
+                .orElse("Unknown validation error");
 
-        return new ResponseEntity<>("Error: "+ firstInterpolatedMessage, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>("Error: " + firstInterpolatedMessage, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<String> handleGenericException(Exception ex) {
-        return new ResponseEntity<>("An unexpected error occurred: " + ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-}
+        return new ResponseEntity<>("An unexpected error occurred: " + ex.getMessage(),
+                HttpStatus.INTERNAL_SERVER_ERROR);
+    }
 
+    @ExceptionHandler(NotFoundException.class)
+    public ResponseEntity<String> handleNotFoundException(NotFoundException ex) {
+        return new ResponseEntity<>("Error: " + ex.getMessage(), HttpStatus.NOT_FOUND);
+    }
 
 }

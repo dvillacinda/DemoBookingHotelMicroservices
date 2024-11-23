@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.dv.microservices.reservation.dto.ReservationRequest;
 import com.dv.microservices.reservation.dto.RoomRequest;
+import com.dv.microservices.reservation.exceptions.NotFoundException;
 import com.dv.microservices.reservation.service.CacheService;
 import com.dv.microservices.reservation.service.ReservationOrchestrator;
 import com.dv.microservices.reservation.service.ReservationService;
@@ -88,48 +89,17 @@ public class ReservationController {
             HttpSession session,
             @RequestParam int position) {
 
-        String listId = (String) session.getAttribute("listId");
-        if (listId == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Room list not found for the current session.");
-        }
-
-        // return the cache list
-        List<RoomRequest> roomRequests = cacheService.retrieveRoomRequests(listId);
-
-        if (roomRequests == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-        }
-
-        // Valid position
-        if (position < 0 || position >= roomRequests.size()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-        }
-
-        RoomRequest selectedRoom = roomRequests.get(position);
-
-        try {
-            String reservationId = (String) session.getAttribute("reservationId");
-            ReservationRequest reservationRequest = cacheService.retrieveReservationRequest(reservationId);
-            ReservationRequest request = new ReservationRequest(
-                reservationId,
-                1,
-                selectedRoom.roomId(),
-                selectedRoom.price(),
-                reservationRequest.startDate(),
-                reservationRequest.endDate(),
-                false,
-                reservationRequest.reservationDate(),
-                false,
-                null
-            );
-            reservationService.completeReservation(request);
-            reservationService.setRoomParamsToStorage(selectedRoom.roomId(), request);
-            return ResponseEntity.status(HttpStatus.CREATED)
-                    .body("Room storage successfully");
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Failed to reserve room. Please try again later.");
-        }
+                try {
+                    // Delegar al orquestador el manejo del flujo completo
+                    String result = reservationOrchestrator.handleRoomSelection(session, position);
+                    return ResponseEntity.status(HttpStatus.CREATED).body(result);
+                } catch (IllegalArgumentException e) {
+                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+                } catch (NotFoundException e) {
+                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+                } catch (Exception e) {
+                    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to reserve room. Please try again later.");
+                }
     }
 
 }

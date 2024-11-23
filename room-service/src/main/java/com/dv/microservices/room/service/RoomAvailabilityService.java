@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.dv.microservices.room.client.InformationClient;
 import com.dv.microservices.room.dto.ReservationRequest;
@@ -27,6 +28,7 @@ public class RoomAvailabilityService {
     private static final LocalTime CHECK_IN = LocalTime.of(11, 0, 0); // 11:00:00
     private static final LocalTime CHECK_OUT = LocalTime.of(15, 0, 0); // 15:00:00
 
+    @Transactional
     public void saveRoomAvailability(RoomAvailabilityRequest roomAvailabilityRequest) {
         // map room availability request to room availability object
         RoomAvailability roomAvailability = roomAvailabilityRequest.toRoomAvailability();
@@ -66,6 +68,7 @@ public class RoomAvailabilityService {
 
     }
 
+    @Transactional
     public void saveAll() {
         try {
             List<Integer> roomsId = informationClient.getRoomsId();
@@ -80,6 +83,7 @@ public class RoomAvailabilityService {
 
     }
 
+    @Transactional(readOnly = true)
     public List<RoomRequest> selectAvailableRoomsRequests(LocalDate startDate, LocalDate endDate) {
         LocalDateTime startDateTime = startDate.atTime(CHECK_IN);
         LocalDateTime endDateTime = endDate.atTime(CHECK_OUT);
@@ -93,7 +97,7 @@ public class RoomAvailabilityService {
         List<RoomRequest> roomRequests = new ArrayList<>();
         if (!roomAvailabilities.isEmpty()) {
             for (RoomAvailability room : roomAvailabilities) {
-                
+
                 price = getPrice(room.getRoomId());
                 description = getDescription(room.getRoomId());
                 servicesInclude = getServicesInclude(room.getRoomId());
@@ -105,34 +109,34 @@ public class RoomAvailabilityService {
                                 description,
                                 price,
                                 capacity,
-                                servicesInclude));              
+                                servicesInclude));
             }
             return roomRequests;
         }
         return null;
     }
 
+    @Transactional
     public void setReservationValues(int roomId, ReservationRequest request) {
         Optional<RoomAvailability> roomOptional = roomRepository.findByRoomId(roomId);
         if (roomOptional.isPresent()) {
             RoomAvailability room = roomOptional.get();
-    
+
             List<ReservationDates> reservationDates = room.getReservationDates();
             if (reservationDates == null) {
                 reservationDates = new ArrayList<>();
             }
-    
+
             reservationDates.add(
                     new ReservationDates(request.startDate().atTime(CHECK_IN),
                             request.endDate().atTime(CHECK_OUT),
                             room));
-    
+
             room.setReservationId(request.id());
             room.setReservationDates(reservationDates);
-    
+
             roomRepository.save(room);
         }
     }
-    
 
 }
