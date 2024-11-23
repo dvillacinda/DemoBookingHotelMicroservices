@@ -6,7 +6,7 @@ databaseChangeLog:
         - onFail: MARK_RAN
         - not:
             - tableExists:
-                tableName: t_room_availability
+                tableName: t_blocked_period
     changes:
     - createTable:
         columns:
@@ -35,6 +35,11 @@ databaseChangeLog:
 - changeSet:
     id: 1732171957451-2
     author: diego (generated)
+    preConditions:
+        - onFail: MARK_RAN
+        - not:
+          - tableExists:
+              tableName: t_reservation_dates
     changes:
     - createTable:
         columns:
@@ -63,6 +68,11 @@ databaseChangeLog:
 - changeSet:
     id: 1732171957451-3
     author: diego (generated)
+    preConditions:
+        - onFail: MARK_RAN
+        - not:
+          - tableExists:
+              tableName: t_room_availability
     changes:
     - createTable:
         columns:

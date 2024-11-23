@@ -46,6 +46,11 @@ databaseChangeLog:
 - changeSet:
     id: 1732075941179-2
     author: diego (generated)
+    preConditions:
+        - onFail: MARK_RAN
+        - not:
+          - tableExists:
+              tableName: t_photo
     changes:
     - createTable:
         columns:

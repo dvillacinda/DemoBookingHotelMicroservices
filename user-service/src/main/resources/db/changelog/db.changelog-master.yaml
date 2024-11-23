@@ -6,7 +6,7 @@ databaseChangeLog:
         - onFail: MARK_RAN
         - not:
             - tableExists:
-                tableName: t_user
+                tableName: t_reservation_history
     changes:
     - createTable:
         columns:
@@ -30,6 +30,11 @@ databaseChangeLog:
 - changeSet:
     id: 1732075915332-2
     author: diego (generated)
+    preConditions:
+        - onFail: MARK_RAN
+        - not:
+          - tableExists:
+              tableName: t_user
     changes:
     - createTable:
         columns:
