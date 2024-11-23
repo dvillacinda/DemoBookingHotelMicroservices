@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.dv.microservices.reservation.dto.ReservationRequest;
 import com.dv.microservices.reservation.dto.RoomRequest;
 import com.dv.microservices.reservation.service.CacheService;
+import com.dv.microservices.reservation.service.ReservationOrchestrator;
 import com.dv.microservices.reservation.service.ReservationService;
 
 import jakarta.servlet.http.HttpSession;
@@ -30,6 +31,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ReservationController {
     private final ReservationService reservationService;
+    private final ReservationOrchestrator reservationOrchestrator;
     private final CacheService cacheService;
 
     @GetMapping("/init-reservation")
@@ -68,7 +70,7 @@ public class ReservationController {
         LocalDate startDate = LocalDate.parse(startString);
         LocalDate endDate = LocalDate.parse(endString); 
         // generate list room
-        List<RoomRequest> roomRequests = reservationService.getAvailableRoom(startDate, endDate);
+        List<RoomRequest> roomRequests = reservationOrchestrator.getAvailableRooms(startDate, endDate);
 
         String listId = UUID.randomUUID().toString();
         cacheService.storeRoomRequest(listId, roomRequests);
@@ -81,7 +83,7 @@ public class ReservationController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/select-room-by-position")
+    @PostMapping("/select-room-by-position")
     public ResponseEntity<String> selectRoomByPosition(
             HttpSession session,
             @RequestParam int position) {

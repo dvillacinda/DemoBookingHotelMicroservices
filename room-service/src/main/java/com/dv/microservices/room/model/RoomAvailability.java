@@ -37,7 +37,6 @@ public class RoomAvailability {
     @Column(nullable = true)
     private String reservationId; 
 
-    @Column(nullable = true)
     @OneToMany(mappedBy = "roomAvailability",cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ReservationDates> reservationDates; 
 }

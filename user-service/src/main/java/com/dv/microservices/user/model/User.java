@@ -38,7 +38,6 @@ public class User {
     @Column(nullable = true)
     private LocalDate updatedAt; 
 
-    @Column(nullable = true)
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ReservationHistory> reservationHistories; 
 }

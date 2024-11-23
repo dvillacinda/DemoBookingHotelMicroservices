@@ -105,9 +105,9 @@ public class RoomAvailabilityService {
                                 description,
                                 price,
                                 capacity,
-                                servicesInclude));
-                return roomRequests;
+                                servicesInclude));              
             }
+            return roomRequests;
         }
         return null;
     }
@@ -116,17 +116,23 @@ public class RoomAvailabilityService {
         Optional<RoomAvailability> roomOptional = roomRepository.findByRoomId(roomId);
         if (roomOptional.isPresent()) {
             RoomAvailability room = roomOptional.get();
-            List<ReservationDates> reservationDates = new ArrayList<>();
+    
+            List<ReservationDates> reservationDates = room.getReservationDates();
+            if (reservationDates == null) {
+                reservationDates = new ArrayList<>();
+            }
+    
             reservationDates.add(
                     new ReservationDates(request.startDate().atTime(CHECK_IN),
                             request.endDate().atTime(CHECK_OUT),
                             room));
-
+    
             room.setReservationId(request.id());
             room.setReservationDates(reservationDates);
-
+    
             roomRepository.save(room);
         }
     }
+    
 
 }

@@ -37,7 +37,6 @@ public class Information {
     @Column(nullable = false)
     private String servicesInclude; 
 
-    @Column(nullable = true)
     @OneToMany(mappedBy = "information",cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Photo> photos; 
 
