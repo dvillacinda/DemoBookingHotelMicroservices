@@ -4,7 +4,6 @@ import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -46,9 +45,10 @@ public class RoomAvailabilityController {
     }   
 
     @PutMapping("/set-reservation-values")
-    public ResponseEntity<String> setReservationValues(
+    @ResponseStatus(HttpStatus.OK)
+    public void setReservationValues(
             @RequestParam int roomId, @RequestBody ReservationRequest reservationRequest) {
         roomAService.setReservationValues(roomId, reservationRequest); 
-        return ResponseEntity.ok().build(); 
+        
     }
 }

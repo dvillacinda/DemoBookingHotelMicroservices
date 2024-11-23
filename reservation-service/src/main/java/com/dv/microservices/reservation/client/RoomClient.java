@@ -1,6 +1,5 @@
 package com.dv.microservices.reservation.client;
 
-import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.cloud.openfeign.FeignClient;
