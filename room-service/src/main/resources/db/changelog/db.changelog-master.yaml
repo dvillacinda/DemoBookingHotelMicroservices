@@ -32,6 +32,7 @@ databaseChangeLog:
             name: start_blocked
             type: datetime
         tableName: t_blocked_period
+
 - changeSet:
     id: 1732171957451-2
     author: diego (generated)
@@ -65,6 +66,7 @@ databaseChangeLog:
             name: start_reservation
             type: datetime
         tableName: t_reservation_dates
+
 - changeSet:
     id: 1732171957451-3
     author: diego (generated)
@@ -92,31 +94,49 @@ databaseChangeLog:
             name: reservation_id
             type: VARCHAR(255)
         tableName: t_room_availability
+
 - changeSet:
     id: 1732171957451-4
     author: diego (generated)
+    preConditions:
+        - onFail: MARK_RAN
+        - not:
+            - indexExists:
+                tableName: t_reservation_dates
+                indexName: FK4npkvrw4ly8u4hvh2ulyb5p2p
     changes:
     - createIndex:
         columns:
         - column:
-            defaultValueComputed: 'NULL'
             name: room_availability_id
         indexName: FK4npkvrw4ly8u4hvh2ulyb5p2p
         tableName: t_reservation_dates
+
 - changeSet:
     id: 1732171957451-5
     author: diego (generated)
+    preConditions:
+        - onFail: MARK_RAN
+        - not:
+            - indexExists:
+                tableName: t_blocked_period
+                indexName: FK80001itrcglcrjm3lms80gdh6
     changes:
     - createIndex:
         columns:
         - column:
-            defaultValueComputed: 'NULL'
             name: room_availability_id
         indexName: FK80001itrcglcrjm3lms80gdh6
         tableName: t_blocked_period
+
 - changeSet:
     id: 1732171957451-6
     author: diego (generated)
+    preConditions:
+        - onFail: MARK_RAN
+        - not:
+            - foreignKeyConstraintExists:
+                foreignKeyName: FK4npkvrw4ly8u4hvh2ulyb5p2p
     changes:
     - addForeignKeyConstraint:
         baseColumnNames: room_availability_id
@@ -129,9 +149,15 @@ databaseChangeLog:
         referencedColumnNames: id
         referencedTableName: t_room_availability
         validate: true
+
 - changeSet:
     id: 1732171957451-7
     author: diego (generated)
+    preConditions:
+        - onFail: MARK_RAN
+        - not:
+            - foreignKeyConstraintExists:
+                foreignKeyName: FK80001itrcglcrjm3lms80gdh6
     changes:
     - addForeignKeyConstraint:
         baseColumnNames: room_availability_id
@@ -144,4 +170,3 @@ databaseChangeLog:
         referencedColumnNames: id
         referencedTableName: t_room_availability
         validate: true
-

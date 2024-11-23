@@ -5,8 +5,8 @@ databaseChangeLog:
     preConditions:
         - onFail: MARK_RAN
         - not:
-          - tableExists:
-              tableName: t_information
+            - tableExists:
+                tableName: t_information
     changes:
     - createTable:
         columns:
@@ -43,14 +43,15 @@ databaseChangeLog:
             name: services_include
             type: VARCHAR(255)
         tableName: t_information
+
 - changeSet:
     id: 1732075941179-2
     author: diego (generated)
     preConditions:
         - onFail: MARK_RAN
         - not:
-          - tableExists:
-              tableName: t_photo
+            - tableExists:
+                tableName: t_photo
     changes:
     - createTable:
         columns:
@@ -71,9 +72,16 @@ databaseChangeLog:
             name: url
             type: VARCHAR(255)
         tableName: t_photo
+
 - changeSet:
     id: 1732075941179-3
     author: diego (generated)
+    preConditions:
+        - onFail: MARK_RAN
+        - not:
+            - indexExists:
+                tableName: t_photo
+                indexName: FKrhxoa96e79hy4m96i09lkw9cg
     changes:
     - createIndex:
         columns:
@@ -82,9 +90,15 @@ databaseChangeLog:
             name: information_id
         indexName: FKrhxoa96e79hy4m96i09lkw9cg
         tableName: t_photo
+
 - changeSet:
     id: 1732075941179-4
     author: diego (generated)
+    preConditions:
+        - onFail: MARK_RAN
+        - not:
+            - foreignKeyConstraintExists:
+                foreignKeyName: FKrhxoa96e79hy4m96i09lkw9cg
     changes:
     - addForeignKeyConstraint:
         baseColumnNames: information_id
@@ -97,4 +111,3 @@ databaseChangeLog:
         referencedColumnNames: id
         referencedTableName: t_information
         validate: true
-

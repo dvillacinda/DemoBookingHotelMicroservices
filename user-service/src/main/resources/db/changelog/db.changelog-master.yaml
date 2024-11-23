@@ -4,97 +4,115 @@ databaseChangeLog:
     author: diego (generated)
     preConditions:
         - onFail: MARK_RAN
+        - onError: MARK_RAN
         - not:
             - tableExists:
                 tableName: t_reservation_history
     changes:
     - createTable:
+        tableName: t_reservation_history
         columns:
         - column:
-            autoIncrement: true
-            constraints:
-              nullable: false
-              primaryKey: true
             name: id
             type: BIGINT
+            autoIncrement: true
+            constraints:
+              primaryKey: true
+              nullable: false
         - column:
-            defaultValueComputed: 'NULL'
             name: reservation_history_id
             type: BIGINT
         - column:
-            constraints:
-              unique: true
             name: reservation_id
             type: VARCHAR(255)
-        tableName: t_reservation_history
+            constraints:
+              unique: true
+
 - changeSet:
     id: 1732075915332-2
     author: diego (generated)
     preConditions:
         - onFail: MARK_RAN
+        - onError: MARK_RAN
         - not:
-          - tableExists:
-              tableName: t_user
+            - tableExists:
+                tableName: t_user
     changes:
     - createTable:
+        tableName: t_user
         columns:
         - column:
-            defaultValueComputed: 'NULL'
-            name: created_at
-            type: date
-        - column:
-            defaultValueComputed: 'NULL'
-            name: updated_at
-            type: date
-        - column:
-            autoIncrement: true
-            constraints:
-              nullable: false
-              primaryKey: true
             name: id
             type: BIGINT
-        - column:
+            autoIncrement: true
             constraints:
+              primaryKey: true
               nullable: false
-              unique: true
+        - column:
             name: email
             type: VARCHAR(255)
-        - column:
-            constraints:
-              nullable: false
-            name: name
-            type: VARCHAR(255)
-        - column:
             constraints:
               nullable: false
               unique: true
+        - column:
+            name: name
+            type: VARCHAR(255)
+            constraints:
+              nullable: false
+        - column:
             name: phone_number
             type: VARCHAR(255)
-        tableName: t_user
+            constraints:
+              nullable: false
+              unique: true
+        - column:
+            name: created_at
+            type: DATE
+            defaultValueComputed: CURRENT_DATE
+        - column:
+            name: updated_at
+            type: DATE
+            defaultValueComputed: CURRENT_DATE
+
 - changeSet:
     id: 1732075915332-3
     author: diego (generated)
+    preConditions:
+        - onFail: MARK_RAN
+        - onError: MARK_RAN
+        - tableExists:
+            tableName: t_reservation_history
+        - not:
+            - indexExists:
+                tableName: t_reservation_history
+                indexName: IDX_RESERVATION_HISTORY_ID
     changes:
     - createIndex:
+        tableName: t_reservation_history
+        indexName: IDX_RESERVATION_HISTORY_ID
         columns:
         - column:
-            defaultValueComputed: 'NULL'
             name: reservation_history_id
-        indexName: FK6iwyrgcrxw19umukmsw5u04ax
-        tableName: t_reservation_history
+
 - changeSet:
     id: 1732075915332-4
     author: diego (generated)
+    preConditions:
+        - onFail: MARK_RAN
+        - onError: MARK_RAN
+        - tableExists:
+            tableName: t_reservation_history
+        - tableExists:
+            tableName: t_user
+        - not:
+            - foreignKeyConstraintExists:
+                foreignKeyName: FK6iwyrgcrxw19umukmsw5u04ax
     changes:
     - addForeignKeyConstraint:
-        baseColumnNames: reservation_history_id
         baseTableName: t_reservation_history
+        baseColumnNames: reservation_history_id
         constraintName: FK6iwyrgcrxw19umukmsw5u04ax
-        deferrable: false
-        initiallyDeferred: false
+        referencedTableName: t_user
+        referencedColumnNames: id
         onDelete: RESTRICT
         onUpdate: RESTRICT
-        referencedColumnNames: id
-        referencedTableName: t_user
-        validate: true
-
