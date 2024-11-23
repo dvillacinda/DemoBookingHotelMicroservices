@@ -28,7 +28,7 @@ public class ReservationService {
     }
 
     public List<RoomRequest> getAvailableRoom(LocalDate startDate, LocalDate endDate){
-        return roomClient.getListAvailableRoom(startDate, endDate);
+        return roomClient.getListAvailableRoom(startDate.toString(), endDate.toString());
     }
 
     public void setRoomParamsToStorage(int roomId, ReservationRequest reservationRequest){

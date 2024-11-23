@@ -17,7 +17,7 @@ public interface RoomClient {
     static final String API = "/api/room";
 
     @RequestMapping(method = RequestMethod.GET, value = API + "/get-list")
-    List<RoomRequest> getListAvailableRoom(@RequestParam LocalDate startDate, @RequestParam LocalDate endDate);
+    List<RoomRequest> getListAvailableRoom(@RequestParam String startDate, @RequestParam String endDate);
 
     @RequestMapping(method = RequestMethod.PUT, value = API + "/set-reservation-values")
     void setReservationParamsToStorage(
