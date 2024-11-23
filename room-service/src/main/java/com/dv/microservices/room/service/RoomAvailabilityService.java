@@ -51,6 +51,16 @@ public class RoomAvailabilityService {
 
     }
 
+    public String getServicesInclude(int roomId) {
+        return informationClient.getServicesInclude(roomId);
+
+    }
+
+    public int getCapacity(int roomId) {
+        return informationClient.getCapacity(roomId);
+
+    }
+
     public String getDescription(int roomId) {
         return informationClient.getDescription(roomId);
 
@@ -70,29 +80,37 @@ public class RoomAvailabilityService {
 
     }
 
-    
     public List<RoomRequest> selectAvailableRoomsRequests(LocalDate startDate, LocalDate endDate) {
         LocalDateTime startDateTime = startDate.atTime(CHECK_IN);
         LocalDateTime endDateTime = endDate.atTime(CHECK_OUT);
         String description = "";
         float price = 0f;
+        String servicesInclude = "";
+        int capacity = 0;
 
         List<RoomAvailability> roomAvailabilities = roomRepository.findAvailableRoomsBetweenDates(startDateTime,
                 endDateTime);
         List<RoomRequest> roomRequests = new ArrayList<>();
         if (!roomAvailabilities.isEmpty()) {
             for (RoomAvailability room : roomAvailabilities) {
+                
                 price = getPrice(room.getRoomId());
                 description = getDescription(room.getRoomId());
+                servicesInclude = getServicesInclude(room.getRoomId());
+                capacity = getCapacity(room.getRoomId());
+
                 roomRequests.add(
-                        new RoomRequest(room.getRoomId(), description, price));
+                        new RoomRequest(
+                                room.getRoomId(),
+                                description,
+                                price,
+                                capacity,
+                                servicesInclude));
                 return roomRequests;
             }
         }
         return null;
     }
-
-
 
     public void setReservationValues(int roomId, ReservationRequest request) {
         Optional<RoomAvailability> roomOptional = roomRepository.findByRoomId(roomId);

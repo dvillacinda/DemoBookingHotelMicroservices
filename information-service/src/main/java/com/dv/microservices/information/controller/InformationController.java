@@ -45,6 +45,18 @@ public class InformationController {
         return informationService.getDescription(roomNumber);
     }
 
+    @GetMapping("/get-services-include")
+    @ResponseStatus(HttpStatus.OK)
+    public String getServicesInclude(@RequestParam int roomNumber){
+        return informationService.getServicesInclude(roomNumber);
+    }
+
+    @GetMapping("/get-capacity")
+    @ResponseStatus(HttpStatus.OK)
+    public int getCapacity(@RequestParam int roomNumber){
+        return informationService.getCapacity(roomNumber);
+    }
+
     @GetMapping("/get-rooms-id")
     @ResponseStatus(HttpStatus.OK)
     public List<Integer> getAllRoomsId(){

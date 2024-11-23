@@ -20,4 +20,10 @@ public interface InformationClient {
 
     @RequestMapping(method = RequestMethod.GET, value = API+"/get-rooms-id")
     List<Integer> getRoomsId(); 
+    
+    @RequestMapping(method=RequestMethod.GET, value = API+"/get-services-include")
+    String getServicesInclude(@RequestParam("roomNumber") int roomNumber);
+
+    @RequestMapping(method=RequestMethod.GET, value = API+"/get-capacity")
+    int getCapacity(@RequestParam("roomNumber") int roomNumber);
 }

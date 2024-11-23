@@ -41,6 +41,24 @@ public class InformationService {
         return null; 
     }
 
+    public String getServicesInclude(int roomNumber){
+        Optional<Information> iOptional = informationRepository.findByRoomNumber(roomNumber);
+        if(iOptional.isPresent()){
+            Information information = iOptional.get();
+            return information.getServicesInclude();
+        }
+        return null; 
+    }
+
+    public int getCapacity(int roomNumber){
+        Optional<Information> iOptional = informationRepository.findByRoomNumber(roomNumber);
+        if(iOptional.isPresent()){
+            Information information = iOptional.get();
+            return information.getCapacity();
+        }
+        return -1; 
+    }
+
     public List<Information> getAllInformations(){
         return informationRepository.findAll(); 
     }
