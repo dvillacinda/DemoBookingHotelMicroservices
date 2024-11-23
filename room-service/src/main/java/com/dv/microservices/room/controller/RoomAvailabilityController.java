@@ -34,21 +34,21 @@ public class RoomAvailabilityController {
         return "Room Availability Placed Successfully!";
     }
 
-    
-
     @GetMapping("/get-list")
     @ResponseStatus(HttpStatus.OK)
-    public List<RoomRequest> getAvailableRoomRequests(@RequestParam String startDate,
-            @RequestParam String endDate) {
+    public List<RoomRequest> getAvailableRoomRequests(
+            @RequestParam("startDate") String startDate,
+            @RequestParam("endDate") String endDate) {
 
         return roomAService.selectAvailableRoomsRequests(LocalDate.parse(startDate), LocalDate.parse(endDate));
-    }   
+    }
 
     @PutMapping("/set-reservation-values")
     @ResponseStatus(HttpStatus.OK)
     public void setReservationValues(
-            @RequestParam int roomId, @RequestBody ReservationRequest reservationRequest) {
-        roomAService.setReservationValues(roomId, reservationRequest); 
-        
+            @RequestParam("roomId") int roomId,
+            @RequestBody ReservationRequest reservationRequest) {
+        roomAService.setReservationValues(roomId, reservationRequest);
+
     }
 }

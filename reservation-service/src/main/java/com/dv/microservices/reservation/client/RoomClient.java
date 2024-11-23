@@ -16,10 +16,13 @@ public interface RoomClient {
     static final String API = "/api/room";
 
     @RequestMapping(method = RequestMethod.GET, value = API + "/get-list")
-    List<RoomRequest> getListAvailableRoom(@RequestParam String startDate, @RequestParam String endDate);
+    List<RoomRequest> getListAvailableRoom(
+            @RequestParam("startDate") String startDate,
+            @RequestParam("endDate") String endDate);
 
     @RequestMapping(method = RequestMethod.PUT, value = API + "/set-reservation-values")
     void setReservationParamsToStorage(
-            @RequestParam int roomId, @RequestBody ReservationRequest reservationRequest);
+            @RequestParam("roomId") int roomId,
+            @RequestBody ReservationRequest reservationRequest);
 
 }
