@@ -56,12 +56,6 @@ public class ReservationController {
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
-    @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public String completeReservation(@Valid @RequestBody ReservationRequest reservationRequest) {
-        reservationService.completeReservation(reservationRequest);
-        return "Placed Reservation successfully";
-    }
 
     @GetMapping("/get-available-rooms")
     public ResponseEntity<Map<String, Object>> getAvailableRooms(
