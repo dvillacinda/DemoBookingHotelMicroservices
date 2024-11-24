@@ -84,7 +84,7 @@ public class ReservationOrchestrator {
 
         setRoomParamsToStorage(selectedRoom.roomId(), request);
 
-        return "Room stored successfully.";
+        return "Reservation stored successfully.";
     }
 
     public void setRoomParamsToStorage(int roomId, ReservationRequest reservationRequest) {

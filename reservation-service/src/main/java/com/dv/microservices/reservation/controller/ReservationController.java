@@ -84,7 +84,7 @@ public class ReservationController {
             @RequestParam int position) {
 
                 try {
-                    // Delegar al orquestador el manejo del flujo completo
+                    
                     String result = reservationOrchestrator.handleRoomSelection(session, position);
                     return ResponseEntity.status(HttpStatus.CREATED).body(result);
                 } catch (IllegalArgumentException e) {
