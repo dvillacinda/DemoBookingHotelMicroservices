@@ -9655,6 +9655,9 @@
           <configuration>
             <source>17</source>
             <target>17</target>
+            <compilerArgs>
+              <arg>-parameters</arg>
+            </compilerArgs>
           </configuration>
         </plugin>
       </plugins>
@@ -9732,6 +9735,9 @@
             <configuration>
               <source>17</source>
               <target>17</target>
+              <compilerArgs>
+                <arg>-parameters</arg>
+              </compilerArgs>
             </configuration>
           </execution>
           <execution>
@@ -9743,12 +9749,18 @@
             <configuration>
               <source>17</source>
               <target>17</target>
+              <compilerArgs>
+                <arg>-parameters</arg>
+              </compilerArgs>
             </configuration>
           </execution>
         </executions>
         <configuration>
           <source>17</source>
           <target>17</target>
+          <compilerArgs>
+            <arg>-parameters</arg>
+          </compilerArgs>
         </configuration>
       </plugin>
       <plugin>

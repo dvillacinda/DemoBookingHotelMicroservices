@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.dv.microservices.reservation.dto.ReservationRequest;
@@ -21,7 +20,6 @@ import com.dv.microservices.reservation.dto.RoomRequest;
 import com.dv.microservices.reservation.exceptions.NotFoundException;
 import com.dv.microservices.reservation.service.CacheService;
 import com.dv.microservices.reservation.service.ReservationOrchestrator;
-import com.dv.microservices.reservation.service.ReservationService;
 
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
@@ -31,7 +29,6 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("api/reservation")
 @RequiredArgsConstructor
 public class ReservationController {
-    private final ReservationService reservationService;
     private final ReservationOrchestrator reservationOrchestrator;
     private final CacheService cacheService;
 
