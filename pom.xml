@@ -127,7 +127,50 @@
             <artifactId>springdoc-openapi-starter-webmvc-api</artifactId>
             <version>2.5.0</version>
         </dependency>
-
-
     </dependencies>
+    <profiles>
+        <!-- Perfil para levantar todos los servicios -->
+        <profile>
+            <id>all-services</id>
+            <modules>
+                <module>information-service</module>
+                <module>reservation-service</module>
+                <module>room-service</module>
+                <module>user-service</module>
+            </modules>
+        </profile>
+
+        <!-- Perfil para levantar solo el servicio Information Service -->
+        <profile>
+            <id>information-service</id>
+            <modules>
+                <module>information-service</module>
+            </modules>
+        </profile>
+
+        <!-- Perfil para levantar solo el servicio Reservation Service -->
+        <profile>
+            <id>reservation-service</id>
+            <modules>
+                <module>reservation-service</module>
+            </modules>
+        </profile>
+
+        <!-- Perfil para levantar solo el servicio Room Service -->
+        <profile>
+            <id>room-service</id>
+            <modules>
+                <module>room-service</module>
+            </modules>
+        </profile>
+
+        <!-- Perfil para levantar solo el servicio User Service -->
+        <profile>
+            <id>user-service</id>
+            <modules>
+                <module>user-service</module>
+            </modules>
+        </profile>
+    </profiles>
+
 </project>
