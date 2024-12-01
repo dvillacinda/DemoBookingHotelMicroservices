@@ -9,5 +9,10 @@ import lombok.Setter;
 @Getter
 @Setter
 public class ConfigProperties {
-    private String roomUrl; 
+    private RoomConfig room;
+    @Getter
+    @Setter
+    public static class RoomConfig {
+        private String url;  // URL del servicio de habitaciones
+    }
 }

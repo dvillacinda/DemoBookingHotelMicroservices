@@ -20,7 +20,7 @@ public class RestClientConfig {
     @Bean
     public RoomClient roomClient() {
         RestClient restClient = RestClient.builder()
-                .baseUrl(configProperties.getRoomUrl())
+                .baseUrl(configProperties.getRoom().getUrl())
                 .build();
         var restClientAdapter = RestClientAdapter.create(restClient);
         var httpServiceProxyFactory = HttpServiceProxyFactory.builderFor(restClientAdapter).build();
