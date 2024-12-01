@@ -35,3 +35,6 @@ build/
 #MySQL
 volume-data/mysql_keycloak_data/mysql.sock
 
+#Secret 
+*.pem
+
