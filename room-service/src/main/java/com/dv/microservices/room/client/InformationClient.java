@@ -24,7 +24,7 @@ public interface InformationClient {
 
     default float fallbackGetPrice(int roomNumber, Throwable throwable) {
         log.error("Failed to retrieve price for roomNumber {}. Reason: {}", roomNumber, throwable.getMessage());
-        return -1; // Valor predeterminado para representar fallo
+        return -1; 
     }
 
     @GetExchange(API + "/get-description")
@@ -34,7 +34,7 @@ public interface InformationClient {
 
     default String fallbackGetDescription(int roomNumber, Throwable throwable) {
         log.error("Failed to retrieve description for roomNumber {}. Reason: {}", roomNumber, throwable.getMessage());
-        return "Description not available"; // Mensaje predeterminado
+        return "Description not available"; 
     }
 
     @GetExchange(API + "/get-rooms-id")

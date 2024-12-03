@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.dv.microservices.room.dto.ReservationRequest;
 import com.dv.microservices.room.dto.RoomAvailabilityRequest;
 import com.dv.microservices.room.dto.RoomRequest;
-import com.dv.microservices.room.service.RoomAvailabilityService;
+import com.dv.microservices.room.service.RoomAvailabilityOrchestrator;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -25,12 +25,12 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("api/room")
 @RequiredArgsConstructor
 public class RoomAvailabilityController {
-    private final RoomAvailabilityService roomAService;
+    private final RoomAvailabilityOrchestrator orchestrator; 
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public String placeRoom(@Valid @RequestBody RoomAvailabilityRequest roomAvailabilityRequest) {
-        roomAService.saveRoomAvailability(roomAvailabilityRequest);
+        orchestrator.placeRoom(roomAvailabilityRequest);
         return "Room Availability Placed Successfully!";
     }
 
@@ -40,7 +40,7 @@ public class RoomAvailabilityController {
             @RequestParam("startDate") String startDate,
             @RequestParam("endDate") String endDate) {
 
-        return roomAService.selectAvailableRoomsRequests(LocalDate.parse(startDate), LocalDate.parse(endDate));
+        return orchestrator.getAvailableRooms(LocalDate.parse(startDate), LocalDate.parse(endDate));
     }
 
     @PutMapping("/set-reservation-values")
@@ -48,7 +48,7 @@ public class RoomAvailabilityController {
     public void setReservationValues(
             @RequestParam("roomId") int roomId,
             @RequestBody ReservationRequest reservationRequest) {
-        roomAService.setReservationValues(roomId, reservationRequest);
+        orchestrator.setReservationValues(roomId, reservationRequest);
 
     }
 }
