@@ -22,10 +22,14 @@
     },
     "peacock.color": "#215732",
     "cSpell.words": [
+        "circuitbreaker",
+        "datasource",
+        "jdbc",
         "liquibase",
         "projectlombok",
         "springdoc",
         "springframework",
+        "timelimiter",
         "webmvc"
     ]
 }
