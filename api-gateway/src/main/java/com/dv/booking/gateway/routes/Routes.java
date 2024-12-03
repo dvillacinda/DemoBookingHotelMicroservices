@@ -9,7 +9,6 @@ import org.springframework.web.servlet.function.RequestPredicates;
 import org.springframework.web.servlet.function.RouterFunction;
 import org.springframework.web.servlet.function.ServerResponse;
 
-
 import static org.springframework.cloud.gateway.server.mvc.filter.FilterFunctions.setPath;
 import static org.springframework.cloud.gateway.server.mvc.handler.GatewayRouterFunctions.route;
 
@@ -123,7 +122,7 @@ public class Routes {
                                 .build();
         }
 
-        //Fallback 
+        // Fallback
 
         @Bean
         public RouterFunction<ServerResponse> fallbackRoute() {
