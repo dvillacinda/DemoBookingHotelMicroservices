@@ -2,6 +2,7 @@ package com.dv.microservices.reservation.service;
 
 import java.util.UUID;
 
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,30 +23,39 @@ public class ReservationService {
 
     @Transactional(readOnly = true)
     public void initReservation(ReservationRequest reservationRequest, HttpSession session) {
-        String reservationId = UUID.randomUUID().toString();
+        try {
+            String reservationId = UUID.randomUUID().toString();
 
-        ReservationRequest updatedRequest = new ReservationRequest(
-                reservationId,
-                1,
-                reservationRequest.roomId(),
-                reservationRequest.price(),
-                reservationRequest.startDate(),
-                reservationRequest.endDate(),
-                reservationRequest.status(),
-                reservationRequest.reservationDate(),
-                reservationRequest.paymentStatus(),
-                reservationRequest.cancellationReason()
-        );
-        cacheService.storeReservationRequest(updatedRequest.id(), updatedRequest);
-        session.setAttribute("reservationId", reservationId);
+            ReservationRequest updatedRequest = new ReservationRequest(
+                    reservationId,
+                    1,
+                    reservationRequest.roomId(),
+                    reservationRequest.price(),
+                    reservationRequest.startDate(),
+                    reservationRequest.endDate(),
+                    reservationRequest.status(),
+                    reservationRequest.reservationDate(),
+                    reservationRequest.paymentStatus(),
+                    reservationRequest.cancellationReason());
+            cacheService.storeReservationRequest(updatedRequest.id(), updatedRequest);
+            session.setAttribute("reservationId", reservationId);
+        } catch (Exception e) {
+            throw new RuntimeException("Unexpected error while processing reservation: " + e.getMessage(), e);
+        }
     }
 
     @Transactional
     public void completeReservation(ReservationRequest reservationRequest) {
-        Reservation reservation = reservationRequest.toReservation();
+        try {
+            Reservation reservation = reservationRequest.toReservation();
 
-        reservationRepository.save(reservation);
-        System.out.println("Reservation successfully completed: " + reservation.getId());
+            reservationRepository.save(reservation);
+            System.out.println("Reservation successfully completed: " + reservation.getId());
+        } catch (DataAccessException e) {
+            throw new RuntimeException("Database error while completing reservation: " + e.getMessage(), e);
+        } catch (Exception e) {
+            throw new RuntimeException("Unexpected error while completing reservation: " + e.getMessage(), e);
+        }
     }
 
 }

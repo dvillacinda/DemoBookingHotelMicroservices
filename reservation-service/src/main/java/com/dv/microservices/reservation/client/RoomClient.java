@@ -48,6 +48,7 @@ public interface RoomClient {
                         Throwable throwable) {
                 log.error("Failed to set reservation parameters for roomId {}. Reason: {}", roomId,
                                 throwable.getMessage());
+                throw new RuntimeException("Failed to set reservation parameters due to: " + throwable.getMessage());
         }
 
 }

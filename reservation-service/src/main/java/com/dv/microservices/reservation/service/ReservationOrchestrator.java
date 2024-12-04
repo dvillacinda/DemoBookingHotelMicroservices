@@ -31,6 +31,8 @@ public class ReservationOrchestrator {
 
             if (availableRooms == null || availableRooms.isEmpty()) {
                 log.warn("No available rooms found for the date range {} to {}", startDate, endDate);
+                throw new NotFoundException(
+                        "No available rooms found for the date range " + startDate + " to " + endDate);
             } else {
                 log.info("Found {} available rooms for the date range {} to {}",
                         availableRooms.size(), startDate, endDate);
@@ -113,7 +115,7 @@ public class ReservationOrchestrator {
             log.error("Service unavailable: Circuit breaker is open for roomId {}", roomId, e);
             throw new RuntimeException("Service unavailable: Circuit breaker is open", e);
         } catch (Exception e) {
-            log.error("Unexpected error while setting room parameters for roomId {}: {}", 
+            log.error("Unexpected error while setting room parameters for roomId {}: {}",
                     roomId, e.getMessage(), e);
             throw new RuntimeException("Unexpected error while setting room parameters", e);
         }
