@@ -1,7 +1,6 @@
 package com.dv.microservices.room.service;
 
 import java.time.LocalDate;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -12,6 +11,7 @@ import com.dv.microservices.room.client.InformationClient;
 import com.dv.microservices.room.dto.ReservationRequest;
 import com.dv.microservices.room.dto.RoomAvailabilityRequest;
 import com.dv.microservices.room.dto.RoomRequest;
+import com.dv.microservices.room.exceptions.NotFoundException;
 import com.dv.microservices.room.model.RoomAvailability;
 
 import lombok.RequiredArgsConstructor;
@@ -62,8 +62,9 @@ public class RoomAvailabilityOrchestrator {
         List<RoomAvailability> availableRooms = roomAvailabilityService.getAvailableRooms(startDate, endDate);
 
         if (availableRooms.isEmpty()) {
-            log.warn("No available rooms found for the specified date range.");
-            return Collections.emptyList();
+            log.warn("No available rooms found for the specified date range. {} -> {}", startDate, endDate);
+            throw new NotFoundException("No available rooms found for the specified date range" + startDate.toString()
+                    + " -> " + endDate.toString());
         }
 
         log.info("Found {} available rooms. Fetching additional information from InformationClient.",
@@ -77,27 +78,27 @@ public class RoomAvailabilityOrchestrator {
                         int capacity = getRoomCapacity(room.getRoomId());
 
                         if (price == -1) {
-                            log.warn("Failed to fetch price for roomId {}",room.getRoomId() );
+                            log.warn("Failed to fetch price for roomId {}", room.getRoomId());
                             throw new RuntimeException("Failed to fetch price for roomId " + room.getRoomId());
                         }
                         if ("Description not available".equals(description)) {
-                            log.warn("Failed to fetch description for roomId {}",room.getRoomId() );
+                            log.warn("Failed to fetch description for roomId {}", room.getRoomId());
                             throw new RuntimeException("Failed to fetch description for roomId " + room.getRoomId());
                         }
                         if ("Services information not available".equals(servicesInclude)) {
-                            log.warn("FFailed to fetch services for roomId {}",room.getRoomId() );
+                            log.warn("FFailed to fetch services for roomId {}", room.getRoomId());
                             throw new RuntimeException("Failed to fetch services for roomId " + room.getRoomId());
                         }
                         if (capacity == -1) {
-                            log.warn("Failed to fetch capacity for roomId {}",room.getRoomId() );
+                            log.warn("Failed to fetch capacity for roomId {}", room.getRoomId());
                             throw new RuntimeException("Failed to fetch capacity for roomId " + room.getRoomId());
                         }
-                        
+
                         return new RoomRequest(room.getRoomId(), description, price, capacity, servicesInclude);
                     } catch (Exception e) {
                         log.error("Failed to fetch information for roomId {}. Reason: {}", room.getRoomId(),
                                 e.getMessage());
-                        return null; // Handle incomplete room data as needed
+                        throw new RuntimeException("Failed to fetch information for roomId " + room.getRoomId(),e);
                     }
                 })
                 .filter(Objects::nonNull)
