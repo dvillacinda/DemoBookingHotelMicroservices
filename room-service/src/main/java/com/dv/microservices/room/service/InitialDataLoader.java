@@ -6,22 +6,21 @@ import org.springframework.stereotype.Component;
 
 import com.dv.microservices.room.repository.RoomAvailabilityRepository;
 
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor
 @Component
 public class InitialDataLoader implements ApplicationRunner{
     private final RoomAvailabilityRepository roomRepository;
-    private final RoomAvailabilityService roomAvailabilityService;
+    private final RoomAvailabilityOrchestrator orchestrator; 
 
-    public InitialDataLoader(RoomAvailabilityRepository roomRepository, RoomAvailabilityService roomAvailabilityService) {
-        this.roomRepository = roomRepository;
-        this.roomAvailabilityService = roomAvailabilityService;
-    }
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
         
         if (roomRepository.count() == 0) {
             
-            roomAvailabilityService.saveAll();
+            orchestrator.synchronizeRoomData();
             System.out.println("Room availability data has been initialized.");
         } else {
             System.out.println("Room availability data already exists. No initialization required.");

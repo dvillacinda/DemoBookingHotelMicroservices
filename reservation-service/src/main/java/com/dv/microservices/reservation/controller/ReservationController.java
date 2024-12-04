@@ -48,11 +48,10 @@ public class ReservationController {
                 reservationRequest.paymentStatus(),
                 reservationRequest.cancellationReason());
         cacheService.storeReservationRequest(reservationRequest.id(), reservationRequest);
-        
+
         session.setAttribute("reservationId", reservationId);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
-
 
     @GetMapping("/get-available-rooms")
     public ResponseEntity<Map<String, Object>> getAvailableRooms(
@@ -60,7 +59,7 @@ public class ReservationController {
             @RequestParam String endString,
             HttpSession session) {
         LocalDate startDate = LocalDate.parse(startString);
-        LocalDate endDate = LocalDate.parse(endString); 
+        LocalDate endDate = LocalDate.parse(endString);
         // generate list room
         List<RoomRequest> roomRequests = reservationOrchestrator.getAvailableRooms(startDate, endDate);
 
@@ -80,17 +79,18 @@ public class ReservationController {
             HttpSession session,
             @RequestParam int position) {
 
-                try {
-                    
-                    String result = reservationOrchestrator.handleRoomSelection(session, position);
-                    return ResponseEntity.status(HttpStatus.CREATED).body(result);
-                } catch (IllegalArgumentException e) {
-                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-                } catch (NotFoundException e) {
-                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-                } catch (Exception e) {
-                    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to reserve room. Please try again later.");
-                }
+        try {
+
+            String result = reservationOrchestrator.handleRoomSelection(session, position);
+            return ResponseEntity.status(HttpStatus.CREATED).body(result);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        } catch (NotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Failed to reserve room. Please try again later.");
+        }
     }
 
 }

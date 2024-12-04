@@ -16,6 +16,11 @@
 
     <dependencies>
         <!-- Dependencias específicas del microservicio -->
+        <dependency>
+            <groupId>org.codehaus.groovy</groupId>
+            <artifactId>groovy</artifactId>
+            <version>3.0.17</version> <!-- Cambia según la versión que prefieras -->
+        </dependency>
 
     </dependencies>
     <build>
