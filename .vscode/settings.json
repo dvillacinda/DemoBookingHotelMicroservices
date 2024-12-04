@@ -24,11 +24,13 @@
     "cSpell.words": [
         "circuitbreaker",
         "datasource",
+        "Informations",
         "jdbc",
         "liquibase",
         "projectlombok",
         "springdoc",
         "springframework",
+        "succesfully",
         "timelimiter",
         "webmvc"
     ]
