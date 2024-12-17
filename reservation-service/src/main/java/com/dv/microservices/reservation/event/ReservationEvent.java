@@ -8,6 +8,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ReservationEvent {
-    private String reservationOrder;
+    private String reservationNumber;
     private String email;
 }

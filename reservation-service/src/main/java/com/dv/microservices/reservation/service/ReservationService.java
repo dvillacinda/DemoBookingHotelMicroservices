@@ -56,8 +56,7 @@ public class ReservationService {
             System.out.println("Reservation successfully completed: " + reservation.getId());
             
             //Send the message to Kafka Topic 
-            int userId = reservationRequest.userId(); 
-            ReservationEvent event = new ReservationEvent(reservation.getId(),"hola"+userId+"@gmail.com"); 
+            ReservationEvent event = new ReservationEvent(reservation.getId(),"rlr7dj@gmail.com"); 
             kafkaTemplate.send("reservation-placed",event); 
 
         } catch (DataAccessException e) {
