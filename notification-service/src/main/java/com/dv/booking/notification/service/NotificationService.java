@@ -7,6 +7,8 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.mail.javamail.MimeMessagePreparator;
 import org.springframework.stereotype.Service;
 
+import com.dv.microservices.reservation.event.ReservationEvent;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -17,13 +19,13 @@ public class NotificationService {
     public final JavaMailSender javaMailSender; 
 
     @KafkaListener(topics = "reservation-placed", groupId = "notification-service")
-    public void listen(com.dv.microservices.reservation.event.ReservationEvent reservationEvent) {
+    public void listen(ReservationEvent reservationEvent) {
         log.info("Got Message from reservation-placed topic {}", reservationEvent);
         
         MimeMessagePreparator messagePreparator = mimeMessage -> {
             MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage);
             messageHelper.setFrom("hotels@example.com"); 
-            messageHelper.setTo(reservationEvent.getEmail());
+            messageHelper.setTo(reservationEvent.getEmail().toString());
             messageHelper.setSubject(String.format("Your Hotel Reservation with Reservation Number %s is Confirmed", reservationEvent.getReservationNumber()));
             messageHelper.setText(String.format("""
                             Hi %s,

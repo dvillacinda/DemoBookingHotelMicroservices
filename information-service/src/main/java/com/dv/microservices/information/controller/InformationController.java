@@ -66,4 +66,10 @@ public class InformationController {
         }
         return roomIds; 
     }
+
+    @GetMapping("/get-all")
+    @ResponseStatus(HttpStatus.OK)
+    public List<Information> getAll(){
+        return informationService.getAllInformations();
+    }
 }
