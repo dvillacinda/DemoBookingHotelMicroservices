@@ -3,10 +3,12 @@ package com.dv.microservices.reservation.service;
 import java.util.UUID;
 
 import org.springframework.dao.DataAccessException;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.dv.microservices.reservation.dto.ReservationRequest;
+import com.dv.microservices.reservation.event.ReservationEvent;
 import com.dv.microservices.reservation.model.Reservation;
 import com.dv.microservices.reservation.repository.ReservationRepository;
 
@@ -20,6 +22,7 @@ public class ReservationService {
 
     private final ReservationRepository reservationRepository;;
     private final CacheService cacheService;
+    private final KafkaTemplate<String, ReservationEvent> kafkaTemplate; 
 
     @Transactional(readOnly = true)
     public void initReservation(ReservationRequest reservationRequest, HttpSession session) {
@@ -51,6 +54,11 @@ public class ReservationService {
 
             reservationRepository.save(reservation);
             System.out.println("Reservation successfully completed: " + reservation.getId());
+            
+            //Send the message to Kafka Topic 
+            ReservationEvent event = new ReservationEvent(reservation.getId(),"rlr7dj@gmail.com"); 
+            kafkaTemplate.send("reservation-placed",event); 
+
         } catch (DataAccessException e) {
             throw new RuntimeException("Database error while completing reservation: " + e.getMessage(), e);
         } catch (Exception e) {

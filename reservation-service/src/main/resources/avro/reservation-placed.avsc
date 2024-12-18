@@ -1,0 +1,9 @@
+{
+    "type": "record",
+    "name": "ReservationEvent",
+    "namespace": "com.dv.microservices.reservation.event",
+    "fields": [
+        { "name": "reservationNumber", "type": "string" },
+        { "name": "email", "type": "string" }
+    ]
+}
