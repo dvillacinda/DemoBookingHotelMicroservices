@@ -33,6 +33,7 @@
         "succesfully",
         "timelimiter",
         "vaadin",
-        "webmvc"
+        "webmvc",
+        "zipkin"
     ]
 }

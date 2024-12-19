@@ -38,3 +38,7 @@ volume-data/mysql_keycloak_data/mysql.sock
 #Secret 
 *.pem
 
+#keycloak configuration 
+docker/keycloak/realms/realm-export.json
+
+
