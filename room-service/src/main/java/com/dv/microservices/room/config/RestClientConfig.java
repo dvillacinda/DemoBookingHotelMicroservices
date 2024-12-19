@@ -14,16 +14,21 @@ import org.springframework.web.service.invoker.HttpServiceProxyFactory;
 
 import com.dv.microservices.room.client.InformationClient;
 
+import io.micrometer.observation.ObservationRegistry;
+import lombok.RequiredArgsConstructor;
+
 @Configuration
+@RequiredArgsConstructor
 public class RestClientConfig {
     @Value("${information.url}")
     private String informationUrl;
-
+    private final ObservationRegistry observationRegistry; 
     @Bean
     public InformationClient roomClient() {
         RestClient restClient = RestClient.builder()
                 .baseUrl(informationUrl)
                 .requestFactory(getClientHttpRequestFactory())
+                .observationRegistry(observationRegistry)
                 .build();
         var restClientAdapter = RestClientAdapter.create(restClient);
         var httpServiceProxyFactory = HttpServiceProxyFactory.builderFor(restClientAdapter).build();
