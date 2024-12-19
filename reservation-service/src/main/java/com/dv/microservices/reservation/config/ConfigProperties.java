@@ -13,6 +13,6 @@ public class ConfigProperties {
     @Getter
     @Setter
     public static class RoomConfig {
-        private String url;  // URL del servicio de habitaciones
+        private String url;  
     }
 }
