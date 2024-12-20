@@ -28,7 +28,6 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <spring.boot.version>3.3.5</spring.boot.version>
     <spring.cloud.version>2023.0.3</spring.cloud.version>
-    <vaadin.version>24.6.0</vaadin.version>
   </properties>
   <dependencyManagement>
     <dependencies>
