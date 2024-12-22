@@ -1,6 +1,6 @@
 import Link from 'next/link';
 
-export default function Nav() {
+const Nav: React.FC = () => {
     return (
         <ul className="mt-3">
             <li className="my-1"><Link className="hover:bg-gray-500" href="/">Home</Link></li>
@@ -9,3 +9,5 @@ export default function Nav() {
         </ul>
     );
 }
+
+export default Nav;
