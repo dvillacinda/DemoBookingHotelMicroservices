@@ -40,5 +40,7 @@ volume-data/mysql_keycloak_data/mysql.sock
 
 #keycloak configuration 
 docker/keycloak/realms/realm-export.json
+volume-data/*
 
-
+#tempo data 
+docker/tempo/tempo-data/blocks/*
