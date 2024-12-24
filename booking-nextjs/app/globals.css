@@ -25,3 +25,9 @@ body {
     )
     rgb(var(--background-start-rgb));
 }
+
+/*header {
+  background-color: #007BFF;
+  color: white;
+  padding: 20px 0;
+}*/

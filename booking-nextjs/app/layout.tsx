@@ -1,35 +1,52 @@
+'use client';
+
 import './globals.css';
 import { Inter } from 'next/font/google';
-import Nav from '../components/nav';
 import AuthStatus from "../components/authStatus";
-import SessionProviderWrapper from '@/utils/sessionProviderWrapper';
-
+import SessionProviderWrapper from '../utils/sessionProviderWrapper';
+import SideBar from '@/components/SideBar';
+import { useState } from 'react';
+import ServerLayout from './server-layout';
 const inter = Inter({ subsets: ['latin'] });
 
-export const metadata = {
-  title: 'My demo',
-  description: 'Some description for my website',
-};
+const links = ["/", "/information/"];
+const items = ["home", "get all"];
 
-// Tipando `children` con React.ReactNode
-interface RootLayoutProps {
-  children: React.ReactNode;
-}
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  const [isOpen, setStatus] = useState(false);
 
-export default function RootLayout({ children }: RootLayoutProps) {
+  const handleOpen = () => {
+    setStatus(true);
+  };
+
+  const handleClose = () => {
+    setStatus(false);
+  };
+
   return (
     <SessionProviderWrapper>
       <html lang="en">
         <body className={inter.className}>
-          <div className="flex flex-row">
-            <div className="w-4/5 p-3 h-screen bg-black">{children}</div>
-            <div className="w-1/5 p-3 h-screen bg-gray-700">
-              <h2 className="text-3xl">Demo - frontend</h2>
-              <AuthStatus />
-              <hr />
-              <Nav />
+          <header className="w-full p-3 bg-gray-700 flex justify-between items-center">
+            <h1 className="text-white text-2xl" >Hotel Paradise</h1>
+            <AuthStatus />
+          </header>
+          <ServerLayout>
+            <div className="flex flex-row">
+              <div className="w-1/6 p-3 h-screen bg-gray-700">
+                <img src="/favicon.ico" alt="icon" style={{ width: "150px", height: "150px", alignContent: "center" }} />
+                <SideBar
+                  items={items}
+                  links={links}
+                  onClose={handleClose}
+                  openClick={handleOpen}
+                  isOpen={isOpen}
+                />
+              </div>
+              <div className="w-4/5 p-3 h-screen bg-black">{children}</div>
+
             </div>
-          </div>
+          </ServerLayout>
         </body>
       </html>
     </SessionProviderWrapper>
