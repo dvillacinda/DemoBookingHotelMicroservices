@@ -28,9 +28,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <html lang="en">
         <body className={inter.className}>
           <header className="w-full p-3 bg-gray-700 flex justify-between items-center">
-            <h1 className="text-white text-2xl" >Hotel Paradise</h1>
-            <AuthStatus />
+            <div className="flex-1"></div>
+            <h1 className="text-white text-2xl text-center flex-1">Hotel Paradise</h1>
+            <div className="flex-1 text-right">
+              <AuthStatus />
+            </div>
           </header>
+
           <ServerLayout>
             <div className="flex flex-row">
               <div className="w-1/6 p-3 h-screen bg-gray-700">
