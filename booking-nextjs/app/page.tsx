@@ -10,7 +10,8 @@ function HotelInfo() {
           <Image
             src="/images/hotel-image.jpg"  // Ruta relativa desde 'public'
             alt="Image del hotel"
-            layout="fill"
+            width={800}
+            height={600}
           />
         </div>
         <div className="hotel-details">

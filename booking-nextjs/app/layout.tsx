@@ -36,7 +36,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           </header>
 
           <ServerLayout>
-            <div className="flex flex-row">
+            <div className="flex flex-row ">
               <div className="w-1/6 p-3 h-screen bg-gray-700">
                 <img src="/favicon.ico" alt="icon" style={{ width: "150px", height: "150px", alignContent: "center" }} />
                 <SideBar

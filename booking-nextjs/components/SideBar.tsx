@@ -12,7 +12,7 @@ interface SideBarProps {
 const SideBar = ({ onClose, items, links, openClick, isOpen }: SideBarProps) => {
     return (
         <>
-            <div id="mySidenav" className="sidenav" style={{ width: isOpen ? '250px' : '0' }}>
+            <div id="mySidenav" className="sidenav" style={{ width: isOpen ? '15.6667%' : '0' }}>
                 <a href="#" className="closebtn" onClick={onClose}>&times;</a>
                 {links.map((l, index) =>
                     <a href={l}
