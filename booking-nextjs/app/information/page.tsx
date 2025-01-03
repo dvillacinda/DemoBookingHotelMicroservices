@@ -25,7 +25,7 @@ export default function InformationList() {
     useEffect(() => {
         async function fetchInformation() {
             try {
-                const response = await fetch("/api/information/get-all");
+                const response = await fetch("/api/information/get-all/");
                 if (response.ok) {
                     const data: { data: Information[] } = await response.json();
                     setInformationList(data.data);

@@ -10,7 +10,7 @@ import ServerLayout from './server-layout';
 const inter = Inter({ subsets: ['latin'] });
 
 const links = ["/", "/information/"];
-const items = ["home", "get all"];
+const items = ["home", "view all rooms, reservation"];
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   const [isOpen, setStatus] = useState(false);
