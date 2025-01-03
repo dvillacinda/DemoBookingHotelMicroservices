@@ -1,13 +1,17 @@
 
 import React from 'react';
 import '../app/styles/hotel.css';
-
+import Image from 'next/image';
 function HotelInfo() {
   return (
     <div className="hotel-info-container">
       <div className="hotel-content">
         <div className="hotel-image">
-          <img src="/hotel-image.jpg" alt="Hotel Paradise" />
+          <Image
+            src="/images/hotel-image.jpg"  // Ruta relativa desde 'public'
+            alt="Image del hotel"
+            layout="fill"
+          />
         </div>
         <div className="hotel-details">
           <h2>About Us</h2>
