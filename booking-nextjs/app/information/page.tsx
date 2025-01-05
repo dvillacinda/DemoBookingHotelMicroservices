@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import RoomCard from "../../components/RoomCard"; // Importamos RoomCard
+import RoomCard from "@/components/RoomCard"; // Importamos RoomCard
 
 interface Photo {
     id: number;

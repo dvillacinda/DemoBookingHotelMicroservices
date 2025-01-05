@@ -1,7 +1,9 @@
 
-import React from 'react';
+
 import '../app/styles/hotel.css';
 import Image from 'next/image';
+
+
 function HotelInfo() {
   return (
     <div className="hotel-info-container">

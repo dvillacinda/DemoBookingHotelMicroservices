@@ -18,8 +18,8 @@ interface Information {
 
 interface RoomCardProps {
     info: Information;
-    onReserve?: (roomId: number) => void; // Función opcional para la reserva (solo en reservation.tsx)
-    isAvailable?: boolean; // Propiedad opcional para la disponibilidad
+    onReserve?: (roomId: number) => void; // Optional property for the reservation
+    isAvailable?: boolean; // Optional property to indicate if the room is available
 }
 
 const RoomCard: React.FC<RoomCardProps> = ({ info, onReserve, isAvailable }) => {

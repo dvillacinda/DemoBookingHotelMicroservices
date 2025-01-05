@@ -1,6 +1,6 @@
 import { authOptions } from "../[...nextauth]/route";
 import { getServerSession } from "next-auth";
-import { getIdToken } from "../../../../utils/sessionTokenAccessor";
+import { getIdToken } from "@/utils/sessionTokenAccessor";
 
 export async function GET(): Promise<Response> {
     try {

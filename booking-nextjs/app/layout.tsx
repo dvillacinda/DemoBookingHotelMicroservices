@@ -2,7 +2,7 @@
 
 import './globals.css';
 import { Inter } from 'next/font/google';
-import AuthStatus from "../components/authStatus";
+import AuthStatus from "@/components/authStatus";
 import SessionProviderWrapper from '../utils/sessionProviderWrapper';
 import SideBar from '@/components/SideBar';
 import { useState } from 'react';

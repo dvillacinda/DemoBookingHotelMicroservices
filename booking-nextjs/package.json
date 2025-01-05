@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "antd": "^5.22.7",
     "axios": "^1.7.9",
     "booking-nextjs": "file:",
     "cryptr": "^6.3.0",
