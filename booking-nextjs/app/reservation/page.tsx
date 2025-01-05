@@ -39,13 +39,13 @@ export default function InformationList() {
     useEffect(() => {
         async function fetchRooms() {
             try {
-                const response = await fetch("/api/reservation/get-av/");
+                const response = await fetch("/api/reservation/get-available-rooms/");
                 if (response.ok) {
                     const data: { data: Information[] } = await response.json();
                     setRoomsList(data.data);
                 }
             } catch (err) {
-                console.error("Error fetching rooms:", err);
+                setError("Error fetching rooms:"+err); 
             }
         }
 
