@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import RoomCard from "@/components/RoomCard";
+import RoomCard from "@/components/RoomCard"; 
 import DateSelector from "@/components/DateSelector";
 import { Dayjs } from "dayjs";
 
@@ -20,23 +20,26 @@ interface Information {
     photos: Photo[];
 }
 
-const RoomPage: React.FC = () => {
+export default function InformationList() {
     const [selectedDate, setSelectedDate] = useState<string | null>(null);
-
-    const handleDateChange = (date: Dayjs | null, dateString: string | string[]) => {
-        setSelectedDate(dateString as string);
-    };
-
-    const handleReserve = (roomId: number) => {
-        alert(`Reserva confirmada para la habitación ${roomId}`);
-    };
-
-    const [roomsList, setRoomsList] = useState<Information[]>([]);
+    
+        const handleDateChange = (date: Dayjs | null, dateString: string | string[]) => {
+            setSelectedDate(dateString as string);
+        };
+    
+        const handleReserve = (roomId: number) => {
+            alert(`Reserva confirmada para la habitación ${roomId}`);
+        };
+    
+        const [roomsList, setRoomsList] = useState<Information[]>([]);
+    
+    
+    const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
         async function fetchRooms() {
             try {
-                const response = await fetch("/api/reservation/get-available-rooms/");
+                const response = await fetch("/api/reservation/get-av/");
                 if (response.ok) {
                     const data: { data: Information[] } = await response.json();
                     setRoomsList(data.data);
@@ -49,7 +52,9 @@ const RoomPage: React.FC = () => {
         fetchRooms();
     }, []);
 
-
+    if (error) {
+        return <div className="text-red-500 text-center mt-4">Error: {error}</div>;
+    }
 
     return (
         <div className="container mx-auto p-5">
@@ -74,6 +79,4 @@ const RoomPage: React.FC = () => {
             </ul>
         </div>
     );
-};
-
-export default RoomPage;
+}

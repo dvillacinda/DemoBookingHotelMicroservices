@@ -1,8 +1,8 @@
 import axios from "axios";
 import { NextResponse } from "next/server";
-import { getAccessToken } from "../../../utils/sessionTokenAccessor";
+import { getAccessToken } from "../../../../utils/sessionTokenAccessor";
 import { getServerSession } from "next-auth";
-import { authOptions } from "../auth/[...nextauth]/route";
+import { authOptions } from "../../auth/[...nextauth]/route";
 
 
 import type { NextRequest } from "next/server";
@@ -12,6 +12,7 @@ export async function GET(req: NextRequest): Promise<Response> {
         const session = await getServerSession(authOptions);
 
         if (!session) {
+            console.log("session" + session);
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
         }
 
@@ -20,7 +21,7 @@ export async function GET(req: NextRequest): Promise<Response> {
             return NextResponse.json({ error: "Server configuration error" }, { status: 500 });
         }
 
-        const url = `${process.env.DEMO_BACKEND_URL}/api/reservation/get-all`;
+        const url = `${process.env.DEMO_BACKEND_URL}/api/info/get-all`;
 
         try {
             const accessToken = await getAccessToken();
