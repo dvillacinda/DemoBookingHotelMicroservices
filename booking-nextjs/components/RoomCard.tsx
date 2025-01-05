@@ -7,18 +7,17 @@ interface Photo {
 }
 
 interface Information {
-    id: number;
-    roomNumber: number;
+    roomId: number
     capacity: number;
     description: string;
     price: number;
     servicesInclude: string;
-    photos: Photo[];
+    photos?: Photo[];
 }
 
 interface RoomCardProps {
     info: Information;
-    onReserve?: (roomId: number) => void; // Optional property for the reservation
+    onReserve?: (roomId: number, index?: number) => void; // Optional property for the reservation
     isAvailable?: boolean; // Optional property to indicate if the room is available
 }
 
@@ -35,20 +34,20 @@ const RoomCard: React.FC<RoomCardProps> = ({ info, onReserve, isAvailable }) => 
 
     return (
         <li className="border rounded-lg shadow-lg p-4 bg-white dark:bg-gray-900">
-            <h2 className="text-xl font-semibold text-blue-600 mb-2">Habitación {info.roomNumber}</h2>
+            <h2 className="text-xl font-semibold text-blue-600 mb-2">Habitación {info.roomId}</h2>
             <p className="text-lg mb-2"><span className="font-bold">Capacidad:</span> {info.capacity} personas</p>
             <p className="text-lg mb-2"><span className="font-bold">Descripción:</span> {info.description}</p>
             <p className="text-lg mb-2"><span className="font-bold">Precio:</span> ${info.price}</p>
             <p className="text-lg mb-4"><span className="font-bold">Servicios incluidos:</span> {info.servicesInclude}</p>
 
             <div>
-                {info.photos.length > 0 ? (
+                {info.photos && info.photos.length > 0 ? (
                     <div className="flex flex-wrap justify-center gap-2 mt-2">
                         {info.photos.map((photo) => (
                             <div key={photo.id} className="relative">
                                 <img
                                     src={photo.url}
-                                    alt={`Foto de la habitación ${info.roomNumber}`}
+                                    alt={`Foto de la habitación ${info.roomId}`}
                                     className="w-20 h-20 object-cover rounded-lg border cursor-pointer transition-transform duration-300 ease-in-out transform hover:scale-125"
                                     onClick={() => handleImageClick(photo.url)}
                                 />
@@ -63,7 +62,7 @@ const RoomCard: React.FC<RoomCardProps> = ({ info, onReserve, isAvailable }) => 
             {/* Botón de reserva solo si la habitación está disponible */}
             {onReserve && isAvailable !== undefined && (
                 <button
-                    onClick={() => onReserve(info.id)}
+                    onClick={() => onReserve(info.roomId)}
                     className={`mt-4 w-full py-2 px-4 rounded-lg transition duration-200 ${
                         isAvailable ? "bg-blue-600 text-white hover:bg-blue-700" : "bg-gray-400 text-white cursor-not-allowed"
                     }`}

@@ -9,8 +9,7 @@ interface Photo {
 }
 
 interface Information {
-    id: number;
-    roomNumber: number;
+    roomId: number,
     capacity: number;
     description: string;
     price: number;
@@ -27,8 +26,18 @@ export default function InformationList() {
             try {
                 const response = await fetch("/api/information/get-all/");
                 if (response.ok) {
-                    const data: { data: Information[] } = await response.json();
-                    setInformationList(data.data);
+                    const data: { data: any[] } = await response.json();
+                    const transformedData = data.data.map((item) => ({
+                        ...item,
+                        roomId: item.roomNumber,
+                        capacity: item.capacity,
+                        description: item.description,
+                        price: item.price,
+                        serviceInclude: item.serviceInclude,
+                        photos: item.photos
+                    }));
+                    setInformationList(transformedData);
+                    console.log("data", data.data)
                 } else {
                     const errorData = await response.json();
                     setError(errorData.error);
@@ -50,7 +59,7 @@ export default function InformationList() {
             <h1 className="text-3xl font-bold text-center mb-6">Lista de Habitaciones</h1>
             <ul className="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
                 {informationList.map((info) => (
-                    <RoomCard key={info.id} info={info} />
+                    <RoomCard key={info.roomId} info={info} />
                 ))}
             </ul>
         </div>
