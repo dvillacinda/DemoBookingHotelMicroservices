@@ -1,6 +1,5 @@
 package com.dv.microservices.user.model;
 
-import java.time.LocalDate;
 import java.util.List;
 
 import jakarta.persistence.CascadeType;
@@ -33,10 +32,6 @@ public class User {
     private String email; 
     @Column(nullable = false,unique = true)
     private String phoneNumber; 
-    @Column(nullable = true)
-    private LocalDate createdAt; 
-    @Column(nullable = true)
-    private LocalDate updatedAt; 
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ReservationHistory> reservationHistories; 
