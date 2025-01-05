@@ -1,9 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import RoomCard from "@/components/RoomCard"; 
+import RoomCard from "@/components/RoomCard"; // Importamos RoomCard
 import DateSelector from "@/components/DateSelector";
-import { Dayjs } from "dayjs";
+import { Dayjs } from "dayjs"
 
 interface Photo {
     id: number;
@@ -21,35 +21,35 @@ interface Information {
 }
 
 export default function InformationList() {
-    const [selectedDate, setSelectedDate] = useState<string | null>(null);
-    
-        const handleDateChange = (date: Dayjs | null, dateString: string | string[]) => {
-            setSelectedDate(dateString as string);
-        };
-    
-        const handleReserve = (roomId: number) => {
-            alert(`Reserva confirmada para la habitación ${roomId}`);
-        };
-    
-        const [roomsList, setRoomsList] = useState<Information[]>([]);
-    
-    
+    const [informationList, setInformationList] = useState<Information[]>([]);
     const [error, setError] = useState<string | null>(null);
+    const [selectedDate, setSelectedDate] = useState<string | null>(null);
+
+    const handleDateChange = (date: Dayjs | null, dateString: string | string[]) => {
+        setSelectedDate(dateString as string);
+    };
+
+    const handleReserve = (roomId: number) => {
+        alert(`Reserva confirmada para la habitación ${roomId}`);
+    };
 
     useEffect(() => {
-        async function fetchRooms() {
+        async function fetchInformation() {
             try {
                 const response = await fetch("/api/reservation/get-available-rooms/");
                 if (response.ok) {
                     const data: { data: Information[] } = await response.json();
-                    setRoomsList(data.data);
+                    setInformationList(data.data);
+                } else {
+                    const errorData = await response.json();
+                    setError(errorData.error);
                 }
             } catch (err) {
-                setError("Error fetching rooms:"+err); 
+                setError("Error al obtener la información");
             }
         }
 
-        fetchRooms();
+        fetchInformation();
     }, []);
 
     if (error) {
@@ -68,7 +68,7 @@ export default function InformationList() {
             )}
 
             <ul className="space-y-6">
-                {roomsList.map((room) => (
+                {informationList.map((room) => (
                     <RoomCard
                         key={room.id}
                         info={room}

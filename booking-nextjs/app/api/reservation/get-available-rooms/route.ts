@@ -21,7 +21,7 @@ export async function GET(req: NextRequest): Promise<Response> {
             return NextResponse.json({ error: "Server configuration error" }, { status: 500 });
         }
 
-        const url = `${process.env.DEMO_BACKEND_URL}/api/info/get-all`;
+        const url = `${process.env.DEMO_BACKEND_URL}/api/reservation/get-available-rooms`;
 
         try {
             const accessToken = await getAccessToken();
