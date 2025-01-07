@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import DateSelector from "@/components/DateSelector";
 import { Dayjs } from "dayjs";
 import RoomCard from "@/components/RoomCard";
+import ConfirmView from "@/components/ConfirmView";
 interface Photo {
     id: number;
     url: string;
@@ -25,6 +26,16 @@ export default function InformationList() {
     const [checkOutDate, setCheckOutDate] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(false);
     const [isAuth, setIsAuth] = useState(false);
+    const [isConfirmViewOpen, setIsConfirmViewOpen] = useState(false);
+    const [selectedRoom, setSelectedRoom] = useState<number | null>(null); 
+
+    // reset values
+    const resetAllValues = () => {
+        setCheckInDate(null);
+        setCheckOutDate(null);
+        setInformationList([]); // Limpiar la lista de habitaciones
+    };
+
 
     // Date format 
     const formatDate = (date: Date): string => {
@@ -93,7 +104,7 @@ export default function InformationList() {
     // fetch init reservaation 
     const fetchInitReservation = async () => {
         try {
-            
+
             console.log("Init reservation");
             const response = await fetch(`/api/reservation/init-reservation`, {
                 method: 'POST',
@@ -106,7 +117,7 @@ export default function InformationList() {
                     end_date: checkOutDate,
                     status: false,
                     reservation_date: formatDate(new Date),
-                    payment_status:false
+                    payment_status: false
                 })
 
             });
@@ -140,10 +151,23 @@ export default function InformationList() {
     // Do Reservation 
     const handleRoomReserve = (roomId: number, index?: number) => {
         if (index !== undefined) {
-            alert(`Room ${roomId} reserved at position ${index}!`);
+            setSelectedRoom(roomId);
+            setIsConfirmViewOpen(true);
         } else {
-            alert(`Room ${roomId} reserved!`);
+            setError("Error: Index room undefined!");
         }
+    };
+
+    const handleConfirmReservation = () => {
+        if (selectedRoom !== null) {
+            alert(`Room ${selectedRoom} reserved!`);
+        }
+        resetAllValues();
+        setIsConfirmViewOpen(false); // Cerramos el ConfirmView
+    };
+
+    const handleCancelReservation = () => {
+        setIsConfirmViewOpen(false); // Cerramos el ConfirmView sin hacer nada
     };
 
 
@@ -201,6 +225,13 @@ export default function InformationList() {
                     No rooms available for the selected dates.
                 </p>
             )}
+            {/* Confirm View Modal */}
+            <ConfirmView
+                isOpen={isConfirmViewOpen}
+                onClose={handleCancelReservation}
+                onConfirm={handleConfirmReservation}
+                message="Are you sure you want to reserve this room?"
+            />
         </div>
     );
 
