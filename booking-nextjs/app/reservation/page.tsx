@@ -26,6 +26,15 @@ export default function InformationList() {
     const [isLoading, setIsLoading] = useState(false);
     const [isAuth, setIsAuth] = useState(false);
 
+    // Date format 
+    const formatDate = (date: Date): string => {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0'); // Meses van de 0-11, por eso sumamos 1
+        const day = String(date.getDate()).padStart(2, '0');
+
+        return `${year}-${month}-${day}`;
+    };
+
     // Function to handle check-in and check-out date changes
     const handleDateChange = (date: Dayjs | null, dateString: string | string[], type: "checkIn" | "checkOut") => {
         if (type === "checkIn") setCheckInDate(dateString as string);
@@ -81,6 +90,37 @@ export default function InformationList() {
         }
     };
 
+    // fetch init reservaation 
+    const fetchInitReservation = async () => {
+        try {
+            
+            console.log("Init reservation");
+            const response = await fetch(`/api/reservation/init-reservation`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    user_id: 1,
+                    start_date: checkInDate,
+                    end_date: checkOutDate,
+                    status: false,
+                    reservation_date: formatDate(new Date),
+                    payment_status:false
+                })
+
+            });
+            if (response.ok) {
+                return;
+            } else {
+                setError("Error: Unexpected error with init reservation");
+            }
+        } catch (error) {
+            console.error("Fetch error:", error);
+            setError("Error while init reservation.");
+        }
+    };
+
     // Confirm the selected dates and fetch room availability
     const handleConfirmDates = () => {
         if (!checkInDate || !checkOutDate) {
@@ -92,8 +132,9 @@ export default function InformationList() {
             setError("Check-In date must be earlier than Check-Out date.");
             return;
         }
-
+        fetchInitReservation();
         fetchInformation();
+
     };
 
     // Do Reservation 
@@ -104,7 +145,7 @@ export default function InformationList() {
             alert(`Room ${roomId} reserved!`);
         }
     };
-    
+
 
     // React to changes in informationList and isLoading
     useEffect(() => {
@@ -142,16 +183,16 @@ export default function InformationList() {
 
             {/* Display room information */}
             {!isLoading && informationList.length > 0 && (
-                <ul className="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3"style={{marginTop:'1%'}}>
-                {informationList.map((room, index) => (
-                    <RoomCard
-                        key={room.roomId} // Pass a unique key
-                        info={room} // Pass room information to RoomCard
-                        isAvailable={true} // You can toggle availability dynamically if needed
-                        onReserve={(roomId) => handleRoomReserve(roomId, index)} // Example callback for reservation
-                    />
-                ))}
-            </ul>
+                <ul className="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3" style={{ marginTop: '1%' }}>
+                    {informationList.map((room, index) => (
+                        <RoomCard
+                            key={room.roomId} // Pass a unique key
+                            info={room} // Pass room information to RoomCard
+                            isAvailable={true} // You can toggle availability dynamically if needed
+                            onReserve={(roomId) => handleRoomReserve(roomId, index)} // Example callback for reservation
+                        />
+                    ))}
+                </ul>
             )}
 
             {/* Message for no available rooms */}
