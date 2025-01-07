@@ -32,13 +32,13 @@ public class ReservationController {
     private final ReservationOrchestrator reservationOrchestrator;
     private final CacheService cacheService;
 
-    @GetMapping("/init-reservation")
+    @PostMapping("/init-reservation")
     public ResponseEntity<String> initReservation(@Valid @RequestBody ReservationRequest reservationRequest,
             HttpSession session) {
         String reservationId = UUID.randomUUID().toString();
         reservationRequest = new ReservationRequest(
                 reservationId,
-                1,
+                reservationRequest.userId(),
                 reservationRequest.roomId(),
                 reservationRequest.price(),
                 reservationRequest.startDate(),
