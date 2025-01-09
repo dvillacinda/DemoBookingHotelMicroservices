@@ -34,10 +34,8 @@ export async function POST(req: NextRequest): Promise<Response> {
                 },
                 withCredentials: true,
             }); 
-            console.log("response: ",response);
             return NextResponse.json({ status: response.status });
         } catch (error: any) {
-            console.log("error: ",error);
             const status = error.response?.status || 500;
             const message = error.response?.data || "Error fetching data";
             return NextResponse.json({ error: message }, { status });
