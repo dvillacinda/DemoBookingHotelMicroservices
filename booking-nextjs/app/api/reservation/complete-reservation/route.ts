@@ -7,6 +7,8 @@ import type { NextRequest } from "next/server";
 
 export async function POST(req: NextRequest): Promise<Response> {
     try {
+        axios.defaults.withCredentials = true;
+
         const session = await getServerSession(authOptions);
 
         if (!session) {
