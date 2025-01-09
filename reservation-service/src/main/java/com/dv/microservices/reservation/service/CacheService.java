@@ -9,12 +9,16 @@ import org.springframework.stereotype.Service;
 import com.dv.microservices.reservation.dto.ReservationRequest;
 import com.dv.microservices.reservation.dto.RoomRequest;
 
+import lombok.extern.slf4j.Slf4j;
+
 @Service
+@Slf4j
 public class CacheService {
     private final Map<String, List<RoomRequest>> roomRequestCache = new ConcurrentHashMap<>();
     private final Map<String, ReservationRequest> reservationRequestCache = new ConcurrentHashMap<>();
 
     public void storeRoomRequest(String key, List<RoomRequest> value) {
+        log.info("save list room with key: "+key+" value: "+value);
         roomRequestCache.put(key, value);
     }
 

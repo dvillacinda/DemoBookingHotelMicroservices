@@ -24,10 +24,12 @@ import com.dv.microservices.reservation.service.ReservationOrchestrator;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequestMapping("api/reservation")
 @RequiredArgsConstructor
+@Slf4j
 public class ReservationController {
     private final ReservationOrchestrator reservationOrchestrator;
     private final CacheService cacheService;
@@ -48,8 +50,9 @@ public class ReservationController {
                 reservationRequest.paymentStatus(),
                 reservationRequest.cancellationReason());
         cacheService.storeReservationRequest(reservationRequest.id(), reservationRequest);
-
+        
         session.setAttribute("reservationId", reservationId);
+        log.info("session for init: ",session.getId());
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
@@ -66,7 +69,7 @@ public class ReservationController {
         String listId = UUID.randomUUID().toString();
         cacheService.storeRoomRequest(listId, roomRequests);
         session.setAttribute("listId", listId);
-
+        log.info("session for get-available: "+session.getId());
         // build the response
         Map<String, Object> response = new HashMap<>();
         response.put("rooms", roomRequests);
@@ -80,7 +83,8 @@ public class ReservationController {
             @RequestParam int position) {
 
         try {
-
+            
+            log.info("session for selected room: ",session.getId());
             String result = reservationOrchestrator.handleRoomSelection(session, position);
             return ResponseEntity.status(HttpStatus.CREATED).body(result);
         } catch (IllegalArgumentException e) {
