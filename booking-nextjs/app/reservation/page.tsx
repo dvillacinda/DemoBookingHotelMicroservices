@@ -27,7 +27,8 @@ export default function InformationList() {
     const [isLoading, setIsLoading] = useState(false);
     const [isAuth, setIsAuth] = useState(false);
     const [isConfirmViewOpen, setIsConfirmViewOpen] = useState(false);
-    const [selectedRoom, setSelectedRoom] = useState<number | null>(null); 
+    const [selectedRoom, setSelectedRoom] = useState<number | null>(null);
+    const [selectedIndex, setSelectedIndex] = useState<number | null>(null); 
 
     // reset values
     const resetAllValues = () => {
@@ -73,9 +74,9 @@ export default function InformationList() {
 
     // Fetch available room data based on selected dates
     const fetchInformation = async () => {
-        setIsLoading(true); // Indicate data is being loaded
-        setError(null); // Clear previous errors
-        setInformationList([]); // Clear previous room data
+        setIsLoading(true); 
+        setError(null); 
+        setInformationList([]); 
 
         try {
             console.log("Fetching data with dates:", { checkInDate, checkOutDate });
@@ -103,7 +104,9 @@ export default function InformationList() {
 
     // fetch init reservaation 
     const fetchInitReservation = async () => {
+        setError(null); 
         try {
+            setError(null); 
 
             console.log("Init reservation");
             const response = await fetch(`/api/reservation/init-reservation`, {
@@ -132,6 +135,30 @@ export default function InformationList() {
         }
     };
 
+    const fetchCompleteReservation = async () => {
+        try {
+            setError(null); 
+
+            console.log("Init reservation");
+            const response = await fetch(`/api/reservation/complete-reservation?position=${selectedIndex}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+
+            });
+            if (response.ok) {
+                
+                return; 
+            } else {
+                setError("Error: Unexpected error with complete reservation");
+            }
+        } catch (error) {
+            console.error("Fetch error:", error);
+            setError("Error while init reservation.");
+        }
+    };
+
     // Confirm the selected dates and fetch room availability
     const handleConfirmDates = () => {
         if (!checkInDate || !checkOutDate) {
@@ -145,13 +172,13 @@ export default function InformationList() {
         }
         fetchInitReservation();
         fetchInformation();
-
     };
 
     // Do Reservation 
     const handleRoomReserve = (roomId: number, index?: number) => {
         if (index !== undefined) {
             setSelectedRoom(roomId);
+            setSelectedIndex(index); 
             setIsConfirmViewOpen(true);
         } else {
             setError("Error: Index room undefined!");
@@ -160,7 +187,13 @@ export default function InformationList() {
 
     const handleConfirmReservation = () => {
         if (selectedRoom !== null) {
-            alert(`Room ${selectedRoom} reserved!`);
+            fetchCompleteReservation(); 
+            if(error!==null){
+                alert(`Room ${selectedRoom} reserved!`);
+            }else{
+                alert("Error with complete youre reservation, please try later!");
+            }
+            
         }
         resetAllValues();
         setIsConfirmViewOpen(false); // Cerramos el ConfirmView

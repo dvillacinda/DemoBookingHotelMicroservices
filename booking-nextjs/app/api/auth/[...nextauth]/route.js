@@ -23,7 +23,7 @@ async function refreshAccessToken(token) {
         access_token: refreshToken.access_token,
         decoded: jwt_decode(refreshToken.access_token),
         id_token: refreshToken.id_token,
-        expires_at: Math.floor(Date.now() / 1000) + refreshToken.expires_in,
+        expires_at: Math.floor(Date.now() / 1000) + refreshToken.expires_in +600,
         refresh_token: refreshToken.refresh_token,
     };
 }

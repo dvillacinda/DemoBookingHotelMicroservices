@@ -18,18 +18,16 @@ export async function POST(req: NextRequest): Promise<Response> {
             return NextResponse.json({ error: "Server configuration error" }, { status: 500 });
         }
         const requestBody = await req.json(); 
-        console.log("request body: ",requestBody); 
         const url = `${process.env.DEMO_BACKEND_URL}/api/reservation/init-reservation`;
 
         try {
             const accessToken = await getAccessToken();
-            console.log("antes de response"); 
             const response = await axios.post(url, requestBody,{
                 headers: {
                     Authorization: `Bearer ${accessToken}`,
                 },
-            });
-            console.log("Response: ",response); 
+                withCredentials: true,
+            }); 
             return NextResponse.json({ status: response.status });
         } catch (error: any) {
             const status = error.response?.status || 500;
