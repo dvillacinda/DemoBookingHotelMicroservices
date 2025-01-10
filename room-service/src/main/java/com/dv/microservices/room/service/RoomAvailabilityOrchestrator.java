@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.dv.microservices.room.client.InformationClient;
+import com.dv.microservices.room.dto.PhotoRequest;
 import com.dv.microservices.room.dto.ReservationRequest;
 import com.dv.microservices.room.dto.RoomAvailabilityRequest;
 import com.dv.microservices.room.dto.RoomRequest;
@@ -44,6 +45,11 @@ public class RoomAvailabilityOrchestrator {
         return informationClient.getDescription(roomId);
     }
 
+    public List<PhotoRequest> getPhotoRequests(int roomId){
+        log.info("Fetching photos for roomId: {}", roomId);
+        return informationClient.getPhoto(roomId);
+    }
+
     @Transactional
     public void placeRoom(RoomAvailabilityRequest request) {
         try {
@@ -76,25 +82,29 @@ public class RoomAvailabilityOrchestrator {
                         String description = getRoomDescription(room.getRoomId());
                         String servicesInclude = getServicesInclude(room.getRoomId());
                         int capacity = getRoomCapacity(room.getRoomId());
-
+                        List<PhotoRequest> photoRequests = getPhotoRequests(room.getRoomId());
                         if (price == -1) {
-                            log.warn("Failed to fetch price for roomId {}", room.getRoomId());
+                            log.error("Failed to fetch price for roomId {}", room.getRoomId());
                             throw new RuntimeException("Failed to fetch price for roomId " + room.getRoomId());
                         }
                         if ("Description not available".equals(description)) {
-                            log.warn("Failed to fetch description for roomId {}", room.getRoomId());
+                            log.error("Failed to fetch description for roomId {}", room.getRoomId());
                             throw new RuntimeException("Failed to fetch description for roomId " + room.getRoomId());
                         }
                         if ("Services information not available".equals(servicesInclude)) {
-                            log.warn("FFailed to fetch services for roomId {}", room.getRoomId());
+                            log.error("FFailed to fetch services for roomId {}", room.getRoomId());
                             throw new RuntimeException("Failed to fetch services for roomId " + room.getRoomId());
                         }
                         if (capacity == -1) {
-                            log.warn("Failed to fetch capacity for roomId {}", room.getRoomId());
+                            log.error("Failed to fetch capacity for roomId {}", room.getRoomId());
                             throw new RuntimeException("Failed to fetch capacity for roomId " + room.getRoomId());
                         }
+                        if(photoRequests.isEmpty()){
+                            log.error("fail to fetch photos for roomId {}", room.getRoomId());
+                            throw new RuntimeException("fail to fetch photos for roomId "+ room.getRoomId());
+                        }
 
-                        return new RoomRequest(room.getRoomId(), description, price, capacity, servicesInclude);
+                        return new RoomRequest(room.getRoomId(), description, price, capacity, servicesInclude,photoRequests);
                     } catch (Exception e) {
                         log.error("Failed to fetch information for roomId {}. Reason: {}", room.getRoomId(),
                                 e.getMessage());

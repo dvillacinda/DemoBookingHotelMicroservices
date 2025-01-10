@@ -40,7 +40,9 @@ public class RoomAvailabilityController {
             @RequestParam("startDate") String startDate,
             @RequestParam("endDate") String endDate) {
 
-        return orchestrator.getAvailableRooms(LocalDate.parse(startDate), LocalDate.parse(endDate));
+            List<RoomRequest> requests = orchestrator.getAvailableRooms(LocalDate.parse(startDate), LocalDate.parse(endDate));
+            System.out.println(requests);
+            return requests;
     }
 
     @PutMapping("/set-reservation-values")
