@@ -33,7 +33,8 @@ public class SecurityConfig {
         configuration.setAllowedOrigins(List.of("http://localhost:3006"));
         configuration.setAllowedMethods(List.of(HttpMethod.GET.name(), HttpMethod.POST.name(), HttpMethod.PUT.name(),
                 HttpMethod.DELETE.name(), HttpMethod.OPTIONS.name()));
-        configuration.setAllowedHeaders(List.of("Authorization", "Content-Type"));
+        configuration
+                .setAllowedHeaders(List.of("Authorization", "Content-Type", "Accept", "X-Requested-With", "Cookie"));
         configuration.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
@@ -43,7 +44,7 @@ public class SecurityConfig {
 
     @Bean
     public CookieSameSiteSupplier cookieSameSiteSupplier() {
-        return CookieSameSiteSupplier.ofNone();
+        return CookieSameSiteSupplier.ofLax();
     }
 
 }

@@ -20,19 +20,22 @@ export async function POST(req: NextRequest): Promise<Response> {
             return NextResponse.json({ error: "Server configuration error" }, { status: 500 });
         }
         const { searchParams } = new URL(req.url);
-        const position = searchParams.get("position");
-        if (!position) {
-            return NextResponse.json({ error: "Missing position parameters" }, { status: 400 });
+        const roomId = searchParams.get("roomId");
+        const reservationIdHash = searchParams.get("reservationIdHash");
+        const roomPrice = searchParams.get("roomPrice");
+        if (!roomId) {
+            return NextResponse.json({ error: "Missing roomId parameters" }, { status: 400 });
         }
         
-        const url = `${process.env.DEMO_BACKEND_URL}/api/reservation/select-room-by-position`;
+        const url = `${process.env.DEMO_BACKEND_URL}/api/reservation/select-room-by-roomId`;
 
         try {
             const accessToken = await getAccessToken();
-            const fullUrl = `${url}?position=${position}`;
+            const fullUrl = `${url}?roomId=${roomId}&reservationIdHash=${reservationIdHash}&roomPrice=${roomPrice}`;
             const response = await axios.post(fullUrl, null, {
                 headers: {
                     Authorization: `Bearer ${accessToken}`,
+                    "Content-Type": "aplication/json"
                 },
                 withCredentials: true,
             }); 

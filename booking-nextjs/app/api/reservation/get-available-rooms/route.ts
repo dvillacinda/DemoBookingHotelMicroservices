@@ -39,6 +39,7 @@ export async function GET(req: NextRequest): Promise<Response> {
             const response = await axios.get(fullUrl, {
                 headers: {
                     Authorization: `Bearer ${accessToken}`,
+                    "Content-Type": "aplication/json"
                 },
                 withCredentials: true,
             });

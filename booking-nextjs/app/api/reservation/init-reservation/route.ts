@@ -28,7 +28,7 @@ export async function POST(req: NextRequest): Promise<Response> {
                 },
                 withCredentials: true,
             }); 
-            return NextResponse.json({ status: response.status });
+            return NextResponse.json({ data: response.data }, { status: response.status });
         } catch (error: any) {
             const status = error.response?.status || 500;
             const message = error.response?.data || "Error fetching data";

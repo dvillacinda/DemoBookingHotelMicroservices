@@ -28,7 +28,8 @@ export default function InformationList() {
     const [isAuth, setIsAuth] = useState(false);
     const [isConfirmViewOpen, setIsConfirmViewOpen] = useState(false);
     const [selectedRoom, setSelectedRoom] = useState<number | null>(null);
-    const [selectedIndex, setSelectedIndex] = useState<number | null>(null); 
+    const [roomHashId, setRoomHashId] = useState<string | null>(null);
+    const [roomPrice, setRoomPrice] = useState<number | null>(null);
 
     // reset values
     const resetAllValues = () => {
@@ -74,9 +75,9 @@ export default function InformationList() {
 
     // Fetch available room data based on selected dates
     const fetchInformation = async () => {
-        setIsLoading(true); 
-        setError(null); 
-        setInformationList([]); 
+        setIsLoading(true);
+        setError(null);
+        setInformationList([]);
 
         try {
             console.log("Fetching data with dates:", { checkInDate, checkOutDate });
@@ -104,9 +105,9 @@ export default function InformationList() {
 
     // fetch init reservaation 
     const fetchInitReservation = async () => {
-        setError(null); 
+        setError(null);
         try {
-            setError(null); 
+            setError(null);
 
             console.log("Init reservation");
             const response = await fetch(`/api/reservation/init-reservation`, {
@@ -125,7 +126,9 @@ export default function InformationList() {
 
             });
             if (response.ok) {
-                return;
+                const data: { data: { reservationIdHash: string } } = await response.json();
+                console.log("hash code: ", data.data.reservationIdHash);
+                setRoomHashId(data.data.reservationIdHash || null);
             } else {
                 setError("Error: Unexpected error with init reservation");
             }
@@ -137,19 +140,20 @@ export default function InformationList() {
 
     const fetchCompleteReservation = async () => {
         try {
-            setError(null); 
-
+            setError(null);
             console.log("Init reservation");
-            const response = await fetch(`/api/reservation/complete-reservation?position=${selectedIndex}`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                }
+            const response = await fetch(
+                `/api/reservation/complete-reservation?roomId=${selectedRoom}&reservationIdHash=${roomHashId}&roomPrice=${roomPrice}`
+                , {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
 
-            });
+                });
             if (response.ok) {
-                
-                return; 
+
+                return;
             } else {
                 setError("Error: Unexpected error with complete reservation");
             }
@@ -178,7 +182,9 @@ export default function InformationList() {
     const handleRoomReserve = (roomId: number, index?: number) => {
         if (index !== undefined) {
             setSelectedRoom(roomId);
-            setSelectedIndex(index); 
+
+            setRoomPrice(informationList[index].price);
+
             setIsConfirmViewOpen(true);
         } else {
             setError("Error: Index room undefined!");
@@ -187,13 +193,16 @@ export default function InformationList() {
 
     const handleConfirmReservation = () => {
         if (selectedRoom !== null) {
-            fetchCompleteReservation(); 
-            if(error!==null){
+            fetchCompleteReservation();
+            if (!error) {
+                // Esto incluye casos donde error es null, undefined, false, 0, "", etc.
+                console.log(`Room ${selectedRoom} reserved!`);
                 alert(`Room ${selectedRoom} reserved!`);
-            }else{
-                alert("Error with complete youre reservation, please try later!");
+            } else {
+                console.log("Error with completing your reservation, error value:", error);
+                alert("Error with completing your reservation, please try later!");
             }
-            
+
         }
         resetAllValues();
         setIsConfirmViewOpen(false); // Cerramos el ConfirmView
@@ -239,6 +248,7 @@ export default function InformationList() {
             {error && <div className="text-red-500 text-center mt-4">{error}</div>}
 
             {/* Display room information */}
+            { }
             {!isLoading && informationList.length > 0 && (
                 <ul className="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3" style={{ marginTop: '1%' }}>
                     {informationList.map((room, index) => (
