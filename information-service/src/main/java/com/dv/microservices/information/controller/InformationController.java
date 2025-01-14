@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.dv.microservices.information.dto.InformationRequest;
+import com.dv.microservices.information.dto.PhotoRequest;
 import com.dv.microservices.information.model.Information;
 import com.dv.microservices.information.service.InformationService;
 
@@ -56,6 +57,13 @@ public class InformationController {
     public int getCapacity(@RequestParam int roomNumber){
         return informationService.getCapacity(roomNumber);
     }
+
+    @GetMapping("/get-photo")
+    @ResponseStatus(HttpStatus.OK)
+    public List<PhotoRequest> getPhoto(@RequestParam int roomNumber){
+        return informationService.getPhoto(roomNumber);
+    }
+
 
     @GetMapping("/get-rooms-id")
     @ResponseStatus(HttpStatus.OK)

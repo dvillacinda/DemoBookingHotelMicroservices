@@ -1,5 +1,6 @@
 package com.dv.microservices.information.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -7,8 +8,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.dv.microservices.information.dto.InformationRequest;
+import com.dv.microservices.information.dto.PhotoRequest;
 import com.dv.microservices.information.exceptions.NotFoundException;
 import com.dv.microservices.information.model.Information;
+import com.dv.microservices.information.model.Photo;
 import com.dv.microservices.information.repository.InformationRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -62,6 +65,19 @@ public class InformationService {
         if (iOptional.isPresent()) {
             Information information = iOptional.get();
             return information.getCapacity();
+        }
+        throw new NotFoundException("Not find any room with this room number: "+roomNumber); 
+    }
+
+    public List<PhotoRequest> getPhoto(int roomNumber) {
+        Optional<Information> iOptional = informationRepository.findByRoomNumber(roomNumber);
+        if (iOptional.isPresent()) {
+            Information information = iOptional.get();
+            List<PhotoRequest> photoRequests = new ArrayList<>();
+            for(Photo photo: information.getPhotos()){
+                photoRequests.add(new PhotoRequest(photo.getUrl(), photo.getId()));
+            }
+            return photoRequests;
         }
         throw new NotFoundException("Not find any room with this room number: "+roomNumber); 
     }

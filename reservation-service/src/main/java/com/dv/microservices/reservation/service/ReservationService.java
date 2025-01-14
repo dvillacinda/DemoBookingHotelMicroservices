@@ -2,6 +2,7 @@ package com.dv.microservices.reservation.service;
 
 import java.util.UUID;
 
+import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.dao.DataAccessException;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
@@ -64,6 +65,17 @@ public class ReservationService {
         } catch (Exception e) {
             throw new RuntimeException("Unexpected error while completing reservation: " + e.getMessage(), e);
         }
+    }
+
+    
+    public static String createReservationIdHash(String reservationId) {
+        
+        return BCrypt.hashpw(reservationId, BCrypt.gensalt(12));
+    }
+
+    
+    public static boolean verifyReservationId(String providedReservationId, String storedHash) {
+        return BCrypt.checkpw(providedReservationId, storedHash);
     }
 
 }

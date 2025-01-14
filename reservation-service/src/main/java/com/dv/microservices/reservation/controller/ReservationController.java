@@ -20,25 +20,30 @@ import com.dv.microservices.reservation.dto.RoomRequest;
 import com.dv.microservices.reservation.exceptions.NotFoundException;
 import com.dv.microservices.reservation.service.CacheService;
 import com.dv.microservices.reservation.service.ReservationOrchestrator;
+import com.dv.microservices.reservation.service.ReservationService;
 
-import jakarta.servlet.http.HttpSession;
+
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequestMapping("api/reservation")
 @RequiredArgsConstructor
+@Slf4j
 public class ReservationController {
     private final ReservationOrchestrator reservationOrchestrator;
     private final CacheService cacheService;
 
-    @GetMapping("/init-reservation")
-    public ResponseEntity<String> initReservation(@Valid @RequestBody ReservationRequest reservationRequest,
-            HttpSession session) {
+    @PostMapping("/init-reservation")
+    public ResponseEntity<Map<String, Object>> initReservation(@Valid @RequestBody ReservationRequest reservationRequest) {
         String reservationId = UUID.randomUUID().toString();
+
+        String reservationIdHash = ReservationService.createReservationIdHash(reservationId);
+
         reservationRequest = new ReservationRequest(
                 reservationId,
-                1,
+                reservationRequest.userId(),
                 reservationRequest.roomId(),
                 reservationRequest.price(),
                 reservationRequest.startDate(),
@@ -47,41 +52,52 @@ public class ReservationController {
                 reservationRequest.reservationDate(),
                 reservationRequest.paymentStatus(),
                 reservationRequest.cancellationReason());
-        cacheService.storeReservationRequest(reservationRequest.id(), reservationRequest);
 
-        session.setAttribute("reservationId", reservationId);
-        return ResponseEntity.status(HttpStatus.OK).build();
+        cacheService.storeReservationRequest(reservationId, reservationRequest);
+        cacheService.storeReservationIdHash(reservationIdHash, reservationId);
+
+        log.info("Reservation initialized with reservationId: {}", reservationId);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("reservationIdHash", reservationIdHash); 
+
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/get-available-rooms")
     public ResponseEntity<Map<String, Object>> getAvailableRooms(
             @RequestParam String startString,
-            @RequestParam String endString,
-            HttpSession session) {
+            @RequestParam String endString) {
+
         LocalDate startDate = LocalDate.parse(startString);
         LocalDate endDate = LocalDate.parse(endString);
-        // generate list room
+
         List<RoomRequest> roomRequests = reservationOrchestrator.getAvailableRooms(startDate, endDate);
 
-        String listId = UUID.randomUUID().toString();
-        cacheService.storeRoomRequest(listId, roomRequests);
-        session.setAttribute("listId", listId);
 
-        // build the response
         Map<String, Object> response = new HashMap<>();
         response.put("rooms", roomRequests);
 
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping("/select-room-by-position")
+    @PostMapping("/select-room-by-roomId")
     public ResponseEntity<String> selectRoomByPosition(
-            HttpSession session,
-            @RequestParam int position) {
+            @RequestParam String reservationIdHash,
+            @RequestParam int roomId,
+            @RequestParam Float roomPrice) {
 
         try {
+            String reservationId = cacheService.retrieveReservationIdHash(reservationIdHash);
+            if (reservationId == null) {
+                log.error("Reservation ID not found for hash: {}", reservationIdHash);
+                throw new NotFoundException("Invalid reservation hash provided.");
+            }
 
-            String result = reservationOrchestrator.handleRoomSelection(session, position);
+            log.info("Processing room selection for reservationId: {}", reservationId);
+
+            String result = reservationOrchestrator.handleRoomSelection(reservationIdHash, roomId,roomPrice);
+
             return ResponseEntity.status(HttpStatus.CREATED).body(result);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());

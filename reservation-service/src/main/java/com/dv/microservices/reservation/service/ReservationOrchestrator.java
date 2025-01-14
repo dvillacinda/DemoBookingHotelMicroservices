@@ -48,49 +48,27 @@ public class ReservationOrchestrator {
         }
     }
 
-    public String handleRoomSelection(HttpSession session, int position) {
-        log.info("Handling room selection at position {} for the current session", position);
+    public String handleRoomSelection(String reservationIdHash, int roomId, Float roomPrice) {
+        log.info("Handling room selection for reservationIdHash: {} at position {}", reservationIdHash, roomId);
 
-        String listId = (String) session.getAttribute("listId");
-        if (listId == null) {
-            log.error("Room list not found in session. Cannot proceed.");
-            throw new NotFoundException("Room list not found for the current session.");
-        }
-
-        // load room list from cache
-        List<RoomRequest> roomRequests = cacheService.retrieveRoomRequests(listId);
-        if (roomRequests == null) {
-            log.error("Room list not found or empty in cache for listId {}", listId);
-            throw new NotFoundException("Room list not found in cache.");
-        }
-
-        // valid position
-        if (position < 0 || position >= roomRequests.size()) {
-            log.warn("Invalid room position {}. Total available rooms: {}", position, roomRequests.size());
-            throw new IllegalArgumentException("Invalid room position.");
-        }
-        // select room
-        RoomRequest selectedRoom = roomRequests.get(position);
-        log.info("Selected room: roomId={}, price={}", selectedRoom.roomId(), selectedRoom.price());
-
-        String reservationId = (String) session.getAttribute("reservationId");
+        
+        String reservationId = cacheService.retrieveReservationIdHash(reservationIdHash);
         if (reservationId == null) {
-            log.error("Reservation ID not found in session. Cannot proceed.");
-            throw new NotFoundException("Reservation not found for the current session.");
+            log.error("Reservation ID not found for hash: {}", reservationIdHash);
+            throw new NotFoundException("Invalid reservation hash provided.");
         }
-
-        // load reservation from cache
         ReservationRequest cachedReservationRequest = cacheService.retrieveReservationRequest(reservationId);
         if (cachedReservationRequest == null) {
-            log.error("Reservation data not found in cache for reservationId {}", reservationId);
-            throw new NotFoundException("Reservation data not found in cache.");
+            log.error("Reservation data not found in cache for reservationId: {}", reservationId);
+            throw new NotFoundException("Reservation data not found for the provided reservation ID.");
         }
 
-        ReservationRequest request = new ReservationRequest(
+        // Update Reservation
+        ReservationRequest updatedReservationRequest = new ReservationRequest(
                 reservationId,
-                1,
-                selectedRoom.roomId(),
-                selectedRoom.price(),
+                cachedReservationRequest.userId(),
+                roomId,
+                roomPrice,
                 cachedReservationRequest.startDate(),
                 cachedReservationRequest.endDate(),
                 false,
@@ -98,10 +76,10 @@ public class ReservationOrchestrator {
                 false,
                 null);
 
-        reservationService.completeReservation(request);
-        log.info("Reservation completed successfully for reservationId {}", reservationId);
+        reservationService.completeReservation(updatedReservationRequest);
+        log.info("Reservation completed successfully for reservationId: {}", reservationId);
 
-        setRoomParamsToStorage(selectedRoom.roomId(), request);
+        setRoomParamsToStorage(roomId, updatedReservationRequest);
 
         return "Reservation stored successfully.";
     }

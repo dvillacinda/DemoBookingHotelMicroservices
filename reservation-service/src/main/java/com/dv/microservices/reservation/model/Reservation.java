@@ -13,9 +13,8 @@ import lombok.Setter;
 
 import java.time.LocalDate;
 
-
 @Entity
-@Table(name ="t_reservation")
+@Table(name = "t_reservation")
 @Getter
 @Setter
 @AllArgsConstructor
@@ -23,16 +22,13 @@ import java.time.LocalDate;
 public class Reservation {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private String id; 
-
-    /*@Column(nullable = false, unique = true)
-    private String reservationNumber;*/
+    private String id;
 
     @Column(nullable = false)
     private Integer userId;
 
     @Column(nullable = false)
-    private Integer roomId; 
+    private Integer roomId;
 
     @Column(nullable = false)
     private LocalDate startDate;
@@ -44,15 +40,15 @@ public class Reservation {
     private Float totalPrice;
 
     @Column(nullable = false)
-    private Boolean status; 
+    private Boolean status;
 
     @Column(nullable = false)
     private LocalDate reservationDate;
 
     @Column(nullable = false)
-    private Boolean paymentStatus; 
+    private Boolean paymentStatus;
 
     @Column(nullable = true)
-    private String cancellationReason; 
-    
+    private String cancellationReason;
+
 }

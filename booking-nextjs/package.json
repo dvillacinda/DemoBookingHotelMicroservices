@@ -3,14 +3,20 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack",
+    "dev": "next dev -p 3006 --turbopack",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
   },
   "dependencies": {
+    "antd": "^5.22.7",
+    "axios": "^1.7.9",
     "booking-nextjs": "file:",
+    "cryptr": "^6.3.0",
+    "jwt-decode": "^4.0.0",
+    "keycloak-js": "^26.0.7",
     "next": "15.1.2",
+    "next-auth": "^4.24.11",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
   },

@@ -1,5 +1,7 @@
 package com.dv.microservices.information.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -28,6 +30,7 @@ public class Photo {
 
     @ManyToOne
     @JoinColumn(name = "information_id")
+    @JsonBackReference
     private Information information; 
 
     public Photo(String url, Information info){

@@ -8,6 +8,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.service.annotation.GetExchange;
 
+import com.dv.microservices.room.dto.PhotoRequest;
+
 import groovy.util.logging.Slf4j;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.retry.annotation.Retry;
@@ -65,6 +67,16 @@ public interface InformationClient {
     default int fallbackGetCapacity(int roomNumber, Throwable throwable) {
         log.error("Failed to retrieve capacity for roomNumber {}. Reason: {}", roomNumber, throwable.getMessage());
         return -1; 
+    }
+
+    @GetExchange(API + "/get-photo")
+    @CircuitBreaker(name = "information", fallbackMethod = "fallbackGetPhoto")
+    @Retry(name = "information")
+    List<PhotoRequest> getPhoto(@RequestParam("roomNumber") int roomNumber);
+
+    default List<PhotoRequest> fallbackGetPhoto(int roomNumber, Throwable throwable) {
+        log.error("Failed to retrieve photos for roomNumber {}. Reason: {}", roomNumber, throwable.getMessage());
+        return Collections.emptyList();  
     }
 }
 
