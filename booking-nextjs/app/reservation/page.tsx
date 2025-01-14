@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from "react";
 import DateSelector from "@/components/DateSelector";
-import { Dayjs } from "dayjs";
+import dayjs, { Dayjs } from "dayjs";
+
 import RoomCard from "@/components/RoomCard";
 import ConfirmView from "@/components/ConfirmView";
 interface Photo {
@@ -27,6 +28,7 @@ export default function InformationList() {
     const [isLoading, setIsLoading] = useState(false);
     const [isAuth, setIsAuth] = useState(false);
     const [isConfirmViewOpen, setIsConfirmViewOpen] = useState(false);
+    const [isSuccessViewOpen, setIsSuccessViewOpen] = useState(false); // Nuevo estado
     const [selectedRoom, setSelectedRoom] = useState<number | null>(null);
     const [roomHashId, setRoomHashId] = useState<string | null>(null);
     const [roomPrice, setRoomPrice] = useState<number | null>(null);
@@ -49,9 +51,36 @@ export default function InformationList() {
     };
 
     // Function to handle check-in and check-out date changes
-    const handleDateChange = (date: Dayjs | null, dateString: string | string[], type: "checkIn" | "checkOut") => {
-        if (type === "checkIn") setCheckInDate(dateString as string);
-        else setCheckOutDate(dateString as string);
+    const handleDateChange = (
+        date: Dayjs | null,
+        dateString: string | string[],
+        type: "checkIn" | "checkOut"
+    ) => {
+        const formattedDateString = Array.isArray(dateString)
+            ? dateString[0]
+            : dateString;
+
+        if (type === "checkIn") {
+            setCheckInDate(formattedDateString);
+
+            // Si la nueva fecha de Check-In es posterior o igual a la de Check-Out, reinicia Check-Out
+            if (
+                checkOutDate &&
+                new Date(formattedDateString) >= new Date(checkOutDate as string)
+            ) {
+                setCheckOutDate(null);
+            }
+        } else if (type === "checkOut") {
+            setCheckOutDate(formattedDateString);
+
+            // Si la nueva fecha de Check-Out es anterior o igual a la de Check-In, reinicia Check-In
+            if (
+                checkInDate &&
+                new Date(formattedDateString) <= new Date(checkInDate as string)
+            ) {
+                setCheckInDate(null);
+            }
+        }
     };
 
     // Authenticate user on component load
@@ -197,10 +226,10 @@ export default function InformationList() {
             if (!error) {
                 // Esto incluye casos donde error es null, undefined, false, 0, "", etc.
                 console.log(`Room ${selectedRoom} reserved!`);
-                alert(`Room ${selectedRoom} reserved!`);
+                setIsSuccessViewOpen(true);
             } else {
                 console.log("Error with completing your reservation, error value:", error);
-                alert("Error with completing your reservation, please try later!");
+                setError("Error with completing your reservation, please try later");
             }
 
         }
@@ -210,6 +239,10 @@ export default function InformationList() {
 
     const handleCancelReservation = () => {
         setIsConfirmViewOpen(false); // Cerramos el ConfirmView sin hacer nada
+    };
+
+    const handleCloseSuccessView = () => {
+        setIsSuccessViewOpen(false); // Cierra la ventana emergente de éxito
     };
 
 
@@ -228,12 +261,15 @@ export default function InformationList() {
             {/* Date selectors */}
             <DateSelector
                 label="Select Check-In Date"
+                value={checkInDate ? dayjs(checkInDate) : null} // Convertir el string a Dayjs o null
                 onChange={(date, dateString) => handleDateChange(date, dateString, "checkIn")}
             />
             <DateSelector
                 label="Select Check-Out Date"
+                value={checkOutDate ? dayjs(checkOutDate) : null} // Convertir el string a Dayjs o null
                 onChange={(date, dateString) => handleDateChange(date, dateString, "checkOut")}
             />
+
 
             {/* Confirm dates button */}
             <button
@@ -249,7 +285,7 @@ export default function InformationList() {
 
             {/* Display room information */}
             { }
-            {!isLoading && informationList.length > 0 && (
+            {!isLoading && informationList.length > 0 && !error && (
                 <ul className="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3" style={{ marginTop: '1%' }}>
                     {informationList.map((room, index) => (
                         <RoomCard
@@ -274,6 +310,13 @@ export default function InformationList() {
                 onClose={handleCancelReservation}
                 onConfirm={handleConfirmReservation}
                 message="Are you sure you want to reserve this room?"
+            />
+
+            <ConfirmView
+                isOpen={isSuccessViewOpen}
+                onClose={handleCloseSuccessView}
+                onConfirm={handleCloseSuccessView}
+                message={`Room ${selectedRoom} reserved successfully!`}
             />
         </div>
     );
